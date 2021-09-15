@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -12,7 +12,7 @@ class Tire extends Model
     protected $casts = [
         'type_dimensions' => 'array',
     ];
-    
+
     protected $attributes = [
         'type_dimensions' => ["DO" => 0.43,
                             "DI" => 0.4,

@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Grimzy\LaravelMysqlSpatial\Eloquent\SpatialTrait;
 use Illuminate\Database\Eloquent\Model;

@@ -2,9 +2,13 @@
 
 namespace App;
 
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
+use App\Models\Wheel;
+use App\Models\Rim;
+use App\Models\Car;
+use App\Models\Tire;
 
 class User extends Authenticatable
 {
@@ -36,4 +40,18 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function wheels() {
+        return $this->hasMany(Wheel::class, 'user_id');
+    }
+
+    public function rims() {
+        return $this->hasMany(Rim::class, 'user_id');
+    }
+    public function cars() {
+        return $this->hasMany(Car::class, 'user_id');
+    }
+    public function tires() {
+        return $this->hasMany(Tire::class, 'user_id');
+    }
 }
