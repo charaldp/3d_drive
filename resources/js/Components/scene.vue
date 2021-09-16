@@ -1,5 +1,5 @@
 <template>
-	<div id="container"></div>
+	<div ref="container"></div>
 </template>
 <script>
 	import * as Three from 'three';
@@ -105,12 +105,12 @@
 			});
 
 			// var physics = new Phys( 9.81, 0.8, 1, [] );
-			let container = document.getElementById('container');
 			// let container = this.$refs.scene_container;
 			// console.log(this.$refs);
 			this.renderer = new Three.WebGLRenderer()
-      		this.renderer.setSize(window.innerWidth, window.innerHeight)
-      		document.body.appendChild(this.renderer.domElement)
+            const size_mult = 0.99;
+      		this.renderer.setSize(window.innerWidth*size_mult, window.innerHeight*size_mult)
+      		this.$refs.container.appendChild(this.renderer.domElement);
 			// var renderer = new Three.WebGLRenderer( { antialias: true } );
 			// renderer.setPixelRatio( container.devicePixelRatio );
 			// renderer.setSize( container.innerWidth, container.innerHeight );
@@ -148,7 +148,7 @@
             // camera
             this.cameraOffset = new Three.Vector3()
 			this.cameraOffset.set( - 2 * this.totalLength, this.totalLength / 2, 0 );
-			this.camera = new Three.PerspectiveCamera( 40, container.innerWidth / container.innerHeight, 1, 1000 * this.totalLength);
+			this.camera = new Three.PerspectiveCamera( 40, window.innerWidth / window.innerHeight, 1, 1000 * this.totalLength);
 			this.camera.position.copy( (this.car.center.clone()).add(this.cameraOffset.applyAxisAngle(new Three.Vector3( 0, 1, 0 ), Math.atan(this.car.frontVector.z / this.car.frontVector.x))));
 			// camera.matrixAutoUpdate = false;
 			this.car.camera = this.camera;
@@ -276,11 +276,11 @@
             this.animate();
         },
         methods: {
-            animate() {
+            animate: function() {
                 requestAnimationFrame( this.animate );
-                this.render();
-            },
-            render() {
+                // this.render();
+            // },
+            // render() {
                 this.timestep = this.timer2 - this.timer1;
                 // timestep = clock.getDelta();
                 this.timer1 = performance.now();
@@ -291,7 +291,7 @@
                 this.throttle += ( this.up ? ( this.throttle < 2 ? 0.05 * this.timestep : 0 ) : ( this.throttle > 1 ? - 0.1 * this.timestep * (this.throttle - 1) : 0 ) );
                 this.brake += ( this.down ? ( this.brake < 1 ? 0.2 * this.timestep : 0 ) : ( this.brake > 0 ? - 0.4 * this.timestep * this.brake : 0 ) );
                 this.steerSpeed = Math.min( 0.05 * this.car.maxSpeed / Math.abs(this.car.speed), 1) * ( (this.left ? 0.6 * this.timestep : 0) - (this.right ? 0.6 * this.timestep : 0) ) - (!(this.left || this.right) ?  this.timestep * this.car.ackermanSteering.steeringWheelPosition : 0);
-                console.log(this.steerSpeed, this.car.maxSpeed);
+                // console.log(this.steerSpeed, this.car.maxSpeed);
                 this.car.transmission.clutch += !this.clutch ? (this.car.transmission.clutch < 1 ? 0.05 * this.timestep : 0 ) : (this.car.transmission.clutch > 0 ? - 0.05 * this.timestep * this.car.transmission.clutch : 0 );
                 // if (this.car.transmission.clutch < 0) this.car.transmission.clutch = 0;
                 // HUD.innerHTML = 'Engine RPM : ' + String( (this.car.engine._rot * 60).toFixed() ) +
@@ -309,7 +309,7 @@
 
                 this.car.updateLoad();
 				this.car.updateClutchConnection( this.throttle, this.brake, this.timestep / 5 );
-				console.log(this.sound);
+				// console.log(this.sound);
                 this.sound.setPlaybackRate( isNaN(this.car.engine._rot) ? 0 : this.car.engine._rot / this.car.engine._idle_rot * 0.9 );
                 this.car.updateWheelTransformation( this.timestep / 5, this.steerSpeed );
                 // this.car.moveCar( timestep / 1 );

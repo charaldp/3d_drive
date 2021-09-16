@@ -1,7 +1,7 @@
 @extends('layouts.app_simple')
 
 @section('content')
-<scene-simple :json="{{App\Car::$vehicle_example}}"></scene-simple>
+<scene-simple :json="{{App\Models\Car::$vehicle_example}}"></scene-simple>
 {{-- <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
