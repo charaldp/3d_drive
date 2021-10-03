@@ -15,6 +15,7 @@ class Tire extends Migration
     {
         Schema::create('tires', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('material_id');
             $table->string('name');
             $table->string('tire_type')->default('flat');

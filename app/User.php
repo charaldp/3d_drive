@@ -48,9 +48,11 @@ class User extends Authenticatable
     public function rims() {
         return $this->hasMany(Rim::class, 'user_id');
     }
+
     public function cars() {
         return $this->hasMany(Car::class, 'user_id');
     }
+
     public function tires() {
         return $this->hasMany(Tire::class, 'user_id');
     }

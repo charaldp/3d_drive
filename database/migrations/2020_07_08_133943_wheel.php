@@ -15,6 +15,7 @@ class Wheel extends Migration
     {
         Schema::create('wheels', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('tire_id');
             $table->unsignedBigInteger('rim_id');
             $table->string('name');

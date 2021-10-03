@@ -87,7 +87,7 @@ export default {
             )
 
             this.renderer = new THREE.WebGLRenderer()
-            var scaler = 1;
+            var scaler = 0.98;
             this.renderer.setSize(scaler*window.innerWidth, scaler*window.innerHeight)
             this.$refs.container.appendChild(this.renderer.domElement);
             // document.body.appendChild(this.renderer.domElement);

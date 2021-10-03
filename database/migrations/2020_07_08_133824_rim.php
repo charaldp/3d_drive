@@ -15,12 +15,13 @@ class Rim extends Migration
     {
         Schema::create('rims', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('material_id');
             $table->string('name');
             $table->string('tire_type')->default('flat');
             $table->json('type_dimensions');
         });
-        
+
     }
 
     /**

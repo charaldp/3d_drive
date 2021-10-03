@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,4 +27,7 @@ Route::get('/scene', function () {
 Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/scenevue', function () {
     return view('scene_vue');
+});
+Route::get('/gameplay', function (Request $request) {
+    return view('gameplay/index');
 });

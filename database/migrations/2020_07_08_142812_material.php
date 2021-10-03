@@ -15,6 +15,7 @@ class Material extends Migration
     {
         Schema::create('materials', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->unsignedBigInteger('user_id');
             $table->unsignedDecimal('friction_static')->default(1);
             $table->unsignedDecimal('friction_sliding')->default(0.8);
             $table->unsignedDecimal('friction_rolling')->default(0.01);
