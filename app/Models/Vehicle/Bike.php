@@ -1,18 +1,25 @@
 <?php
-
-namespace App\Models;
+namespace App\Models\Vehicle;
 
 use Grimzy\LaravelMysqlSpatial\Eloquent\SpatialTrait;
-use Illuminate\Database\Eloquent\Model;
+use App\Models\Vehicle\Vehicle;
 
-class Car extends Model
+class Bike extends Vehicle
 {
     use SpatialTrait;
+
+    protected $table = 'bikes';
+
+    protected $fillable = [
+        'bounding_box',
+    ];
 
     protected $spatialFields = [
         'body_points',
         'wheel_center_positions'
     ];
+
+
 
     public static $vehicle_example = "{
         \"vehicles\" : [{

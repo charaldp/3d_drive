@@ -10,7 +10,7 @@
         "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js"
     },
     "devDependencies": {
-        "axios": "^0.21.1",
+        "axios": "^0.21.4",
         "bootstrap": "^4.0.0",
         "cross-env": "^7.0",
         "jquery": "^3.2",
@@ -26,11 +26,12 @@
     "dependencies": {
         "cannon": "^0.6.2",
         "dat.gui": "^0.7.7",
+        "lang.js": "^1.1.14",
         "oimo": "^1.0.9",
-        "three": "^0.116.1",
+        "three": "^0.135.0",
         "vue": "^2.6.11",
+        "vue-axios": "^2.1.5",
         "vue-object-merge": "^0.1.8",
-        "vue-threejs": "^0.2.0-alpha.1",
         "vuex": "^3.5.1",
         "vuex-map-fields": "^1.4.1"
     }

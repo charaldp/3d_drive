@@ -9,7 +9,7 @@ require('./bootstrap');
 window.Vue = require('vue');
 import Vuex from 'vuex';
 import { mapState } from 'vuex';
-import storeData from "./store/index.js"    
+import storeData from "./store/index.js"
 // import VueThreejs from 'vue-threejs'
 // Vue.use(VueThreejs)
 /**
@@ -23,9 +23,10 @@ import storeData from "./store/index.js"
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
-Vue.component('example-component', require('./components/ExampleComponent.vue').default);
-Vue.component('scene-component', require('./components/scene.vue').default);
-Vue.component('scene-simple', require('./components/sceneSimple.vue').default);
+// Vue.component('example-component', require('./components/ExampleComponent.vue').default);
+// Vue.component('scene-component', require('./components/scene.vue').default);
+// Vue.component('scene-simple', require('./components/sceneSimple.vue').default);
+Vue.component('rim-editor', require('./garage/rim/rim_editor.vue').default);
 
 import * as Three from 'three';
 // const THREE = require('THREE')
@@ -43,4 +44,29 @@ const store = new Vuex.Store(
 
 const app = new Vue({
     el: '#app',
+    store, //vuex
+    data() {
+        return {
+        }
+    },
+    methods: {
+        __(search_string = '', translation_object={}) {
+            var path_localization_array = search_string.split('.');
+            if (path_localization_array.length > 1) {
+                var localization_object = Object.assign({}, this.$root.$refs.lang.lang[path_localization_array[0]]);
+                for (var i = 1; i < path_localization_array.length - 1; i++) {
+                    localization_object = Object.assign({},localization_object[path_localization_array[i]]);
+                }
+                var localizationString = localization_object[path_localization_array[i]];
+            } else {
+                var localizationString = this.$root.$refs.lang.lang[path_localization_array[0]];
+            }
+            if (typeof localizationString === 'string') {
+                for (var key in translation_object) {
+                    localizationString = localizationString.replace(':'+key,translation_object[key]);
+                }
+            }
+            return localizationString;
+        },
+    }
 });

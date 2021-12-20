@@ -31,3 +31,12 @@ Route::get('/scenevue', function () {
 Route::get('/gameplay', function (Request $request) {
     return view('gameplay/index');
 });
+
+Route::GET('/rim', 'RimController@index')->name('rim.index');
+Route::POST('/rim', 'RimController@store')->name('rim.store');
+Route::GET('/rim/create', 'RimController@create')->name('rim.create');
+Route::GET('/rim/{rim}/edit', 'RimController@edit')->name('rim.edit');
+Route::PATCH('/rim/{rim}', 'RimController@update')->name('rim.update');
+Route::GET('/rim/{rim}', 'RimController@show')->name('rim.show');
+Route::DELETE('/rim/{rim}', 'RimController@destroy')->name('rim.destroy');
+

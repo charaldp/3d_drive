@@ -5,10 +5,10 @@ namespace App;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use App\Models\Wheel;
-use App\Models\Rim;
-use App\Models\Car;
-use App\Models\Tire;
+use App\Models\Parts\Wheel;
+use App\Models\Parts\Rim;
+use App\Models\Parts\Tire;
+use App\Models\Vehicle\Car;
 
 class User extends Authenticatable
 {

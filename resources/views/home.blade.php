@@ -11,6 +11,7 @@
         <td>{{$rim->name}}</td>
     </tr>
     @endforeach
+    <button class="brn btn-success" href="{{route('rim.create')}}">Create Rim</button>
 </table>
 <table>
     <tr><th>Tires</th></tr>
