@@ -1,12 +1,10 @@
 <?php
 namespace App\Models\Vehicle;
 
-use Grimzy\LaravelMysqlSpatial\Eloquent\SpatialTrait;
 use App\Models\Vehicle\Vehicle;
 
 class Bike extends Vehicle
 {
-    use SpatialTrait;
 
     protected $table = 'bikes';
 

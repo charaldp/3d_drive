@@ -7,6 +7,7 @@
 require('./bootstrap');
 
 window.Vue = require('vue');
+window.THREE = require('three');
 import Vuex from 'vuex';
 import { mapState } from 'vuex';
 import storeData from "./store/index.js"
@@ -27,10 +28,20 @@ import storeData from "./store/index.js"
 // Vue.component('scene-component', require('./components/scene.vue').default);
 // Vue.component('scene-simple', require('./components/sceneSimple.vue').default);
 Vue.component('rim-editor', require('./garage/rim/rim_editor.vue').default);
+Vue.component('models-scene', require('./graphics/models_scene.vue').default);
+Vue.component('model', require('./graphics/model.vue').default);
+Vue.component('rim', require('./graphics/Rim.vue').default);
+Vue.component('tire', require('./graphics/Tire.vue').default);
 
-import * as Three from 'three';
-// const THREE = require('THREE')
-Vue.use(Three);
+import Vue from 'vue';
+import VueLang from '@eli5/vue-lang-js'
+window.THREE = require('three')
+
+Vue.use(VueLang, {
+    messages: 'messages.js', // Provide locale file
+    locale: 'en', // Set locale
+    fallback: 'en' // Set fallback lacale
+})
 
 const store = new Vuex.Store(
     storeData
@@ -50,23 +61,23 @@ const app = new Vue({
         }
     },
     methods: {
-        __(search_string = '', translation_object={}) {
-            var path_localization_array = search_string.split('.');
-            if (path_localization_array.length > 1) {
-                var localization_object = Object.assign({}, this.$root.$refs.lang.lang[path_localization_array[0]]);
-                for (var i = 1; i < path_localization_array.length - 1; i++) {
-                    localization_object = Object.assign({},localization_object[path_localization_array[i]]);
-                }
-                var localizationString = localization_object[path_localization_array[i]];
-            } else {
-                var localizationString = this.$root.$refs.lang.lang[path_localization_array[0]];
-            }
-            if (typeof localizationString === 'string') {
-                for (var key in translation_object) {
-                    localizationString = localizationString.replace(':'+key,translation_object[key]);
-                }
-            }
-            return localizationString;
-        },
+    //     __(search_string = '', translation_object={}) {
+    //         var path_localization_array = search_string.split('.');
+    //         if (path_localization_array.length > 1) {
+    //             var localization_object = Object.assign({}, this.$root.$refs.lang.lang[path_localization_array[0]]);
+    //             for (var i = 1; i < path_localization_array.length - 1; i++) {
+    //                 localization_object = Object.assign({},localization_object[path_localization_array[i]]);
+    //             }
+    //             var localizationString = localization_object[path_localization_array[i]];
+    //         } else {
+    //             var localizationString = this.$root.$refs.lang.lang[path_localization_array[0]];
+    //         }
+    //         if (typeof localizationString === 'string') {
+    //             for (var key in translation_object) {
+    //                 localizationString = localizationString.replace(':'+key,translation_object[key]);
+    //             }
+    //         }
+    //         return localizationString;
+    //     },
     }
 });

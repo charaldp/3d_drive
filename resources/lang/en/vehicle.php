@@ -14,4 +14,5 @@ return [
         'axleDI' => "Axle Inner Diameter",
         'axleDO' => "Axle Oute Diameter",
         'tAxle' => "Axle Width",
-    ]
+    ],
+];

@@ -1,6 +1,8 @@
 @extends('layouts.app')
+@section('content')
 <rim-editor
-    :rim="'{{json_encode($rim)}}'"
-    :dimension_names="'{{json_encode($rim->dimension_names())}}'"
+    :rim_in="{{json_encode($rim)}}"
+    :dimension_names="{{json_encode($rim->dimension_names())}}"
 >
 </rim-editor>
+@endsection
