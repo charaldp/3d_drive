@@ -40,7 +40,7 @@ class Rim extends Model {
             "DI" => 0.4,
             "t" => 0.15,
             "intrWidth" => 0.022,
-            "numRibs" => 1,
+            "numRibs" => 4,
             "tRib" => 0.015,
             "dRib" => 0.030,
             "ribsPosition" => 0.12,
