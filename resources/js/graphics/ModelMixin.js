@@ -1,6 +1,7 @@
 export default {
     props: [
         'arguments',
+        'meshMaterial',
     ],
     data() {
         return {
@@ -11,13 +12,17 @@ export default {
 
     },
     mounted() {
-
+        this.$nextTick(() => {
+            this.transferAguments()
+            this.fabricate()
+            this.addToScene()
+        })
     },
     methods: {
-        handle() {
-            this.fabricate();
-            this.addToScene();
-        }
+        addToScene() {
+            console.log(this.$parent, this.$parent.$parent, this.mesh);
+            this.$parent.$parent.scene.add(this.mesh)
+        },
 
     }
 }

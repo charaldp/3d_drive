@@ -7,43 +7,60 @@ import MidelMixin from './ModelMixin';
 export default {
     name: 'rim',
     props: [
-        'arguments',
+
     ],
     mixins: [MidelMixin],
     data() {
         return {
-            rimType: this.arguments.rimType,
-            rimDims: this.arguments.rimDims,
-            meshMaterial: this.arguments.meshMaterial,
+            rimType: null,
+            rimDims: null,
             rimGeo: null,
         }
     },
+    mounted() {
+    },
+    watch: {
+        arguments() {
+            this.transferAguments()
+            this.fabricate()
+        }
+    },
     methods: {
+        transferAguments() {
+            this.rimType = this.arguments.rim_type
+            this.rimDims = this.arguments.type_dimensions
+        },
         fabricate() {
             this.rimGeo = new THREE.BufferGeometry();
-            switch ( rimType ) {
-            case 'Ribs':
-                this.points = [[new THREE.Vector2( rimDims.DO / 2, rimDims.t ), new THREE.Vector2( rimDims.DI / 2, rimDims.t - rimDims.intrWidth ), new THREE.Vector2( rimDims.DI / 2, rimDims.intrWidth ), new THREE.Vector2( rimDims.DO / 2, 0 )],
-                            [new THREE.Vector2( rimDims.axleDI / 2, rimDims.ribsPosition - rimDims.tAxle / 2 ), new THREE.Vector2( rimDims.axleDO / 2, rimDims.ribsPosition - rimDims.tAxle / 2 ), new THREE.Vector2( rimDims.axleDO / 2, rimDims.ribsPosition + rimDims.tAxle / 2 - rimDims.axleIntrWidth ), new THREE.Vector2( rimDims.axleDI / 2, rimDims.ribsPosition + rimDims.tAxle / 2 ), new THREE.Vector2( 0, rimDims.ribsPosition + rimDims.tAxle / 2 ) ]];
-                var rib = new THREE.CylinderGeometry( rimDims.dRib / 2, rimDims.dRib / 2, ( rimDims.DI - rimDims.axleDO ) / 2, 4, 1, true ).rotateY( Math.PI / 4 );
-                for ( var i = 0; i < rib.vertices.length; i++ ) rib.vertices[i].z *= rimDims.tRib / rimDims.dRib;
-                rib.translate( 0, ( rimDims.DI + rimDims.axleDO ) / 4, rimDims.ribsPosition );
-                // BoxGeometry( rimDims.t, rimDims.d, ( rimDims.DI - rimDims.axleDO ) / 2 )
-                for ( var i = 0; i < rimDims.numRibs; i++ ) {
-                this.rimGeo.merge(rib.clone().rotateZ(2 * i * Math.PI / rimDims.numRibs ));
-                }
+            console.log(this.rimType);
+            switch ( this.rimType ) {
+                case 'Ribs':
+                    this.points = [[new THREE.Vector2( this.rimDims.DO / 2, this.rimDims.t ), new THREE.Vector2( this.rimDims.DI / 2, this.rimDims.t - this.rimDims.intrWidth ), new THREE.Vector2( this.rimDims.DI / 2, this.rimDims.intrWidth ), new THREE.Vector2( this.rimDims.DO / 2, 0 )],
+                                [new THREE.Vector2( this.rimDims.axleDI / 2, this.rimDims.ribsPosition - this.rimDims.tAxle / 2 ), new THREE.Vector2( this.rimDims.axleDO / 2, this.rimDims.ribsPosition - this.rimDims.tAxle / 2 ), new THREE.Vector2( this.rimDims.axleDO / 2, this.rimDims.ribsPosition + this.rimDims.tAxle / 2 - this.rimDims.axleIntrWidth ), new THREE.Vector2( this.rimDims.axleDI / 2, this.rimDims.ribsPosition + this.rimDims.tAxle / 2 ), new THREE.Vector2( 0, this.rimDims.ribsPosition + this.rimDims.tAxle / 2 ) ]];
+                    var rib = new THREE.CylinderGeometry( this.rimDims.dRib / 2, this.rimDims.dRib / 2, ( this.rimDims.DI - this.rimDims.axleDO ) / 2, 4, 1, true ).rotateY( Math.PI / 4 );
+                    const ponits = rib.attributes.position.array
+                    for ( var i = 0; i < ponits.length; i+=3 ) {
+                        ponits[i+2] *= this.rimDims.tRib / this.rimDims.dRib;
+                    }
+                    rib.translate( 0, ( this.rimDims.DI + this.rimDims.axleDO ) / 4, this.rimDims.ribsPosition );
+                    // BoxGeometry( this.rimDims.t, this.rimDims.d, ( this.rimDims.DI - this.rimDims.axleDO ) / 2 )
+                    for ( var i = 0; i < this.rimDims.numRibs; i++ ) {
+                    this.rimGeo.merge(rib.clone().rotateZ(2 * i * Math.PI / this.rimDims.numRibs ));
+                    }
 
-                break;
-            case '':
+                    break;
+                case '':
+                default:
 
-                break;
+                    break;
             }
             for ( var i = 0; i < this.points.length; i++ ) {
             this.rimGeo.merge( new THREE.LatheGeometry( this.points[i], 64 ).rotateX( Math.PI / 2 ) );// + Transform ?
             }
-            this.meshOut = new THREE.Mesh( this.rimGeo, meshMaterial.rim.clone() );
+            this.mesh = new THREE.Mesh( this.rimGeo, this.meshMaterial.rim.clone() );
+///
+        },
 
-        }
     }
 }
 </script>

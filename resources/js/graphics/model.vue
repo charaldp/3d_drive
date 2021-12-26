@@ -3,11 +3,14 @@
         <rim
             v-if="this.model_specifier == this.models.rim"
             :arguments="this.arguments"
+            :meshMaterial="this.meshMaterial"
+
         >
         </rim>
         <tire
             v-else-if="this.model_specifier == this.models.tire"
             :arguments="this.arguments"
+            :meshMaterial="this.meshMaterial"
         >
         </tire>
     </div>
@@ -18,6 +21,7 @@ export default {
     props: [
         'model_specifier',
         'arguments',
+        'meshMaterial',
     ],
     data() {
         return {

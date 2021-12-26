@@ -53,7 +53,11 @@ export default {
         ...mapState(['rim']),
     },
     methods: {
-
+        onDimensionChange(dimension, value) {
+            var obj = {changes: {rim: {}}}
+            obj[dimension] = value
+            this.$store.commit('MERGE', obj)
+        }
 
     }
 }

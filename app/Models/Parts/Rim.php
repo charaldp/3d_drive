@@ -13,7 +13,7 @@ class Rim extends Model {
 
     protected $fillable = [
         'type_dimensions',
-        'ribs',
+        'rim_type',
     ];
 
     public function dimension_names() {
@@ -34,7 +34,7 @@ class Rim extends Model {
     }
 
     public static $creation_attributes = [
-        'rim_type' => 'ribs',
+        'rim_type' => 'Ribs',
         'type_dimensions' => [
             "DO" => 0.43,
             "DI" => 0.4,
