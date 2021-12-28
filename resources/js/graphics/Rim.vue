@@ -21,17 +21,6 @@ export default {
     },
     mounted() {
     },
-    watch: {
-        arguments() {
-            // console.log(this.mesh);
-            // this.mesh.dispose()
-            // this.$parent.$parent.scene.remove(this.mesh)
-            this.rimGeo.dispose()
-            this.transferAguments()
-            this.fabricate()
-            this.addToScene()
-        }
-    },
     methods: {
         transferAguments() {
             this.rimType = this.arguments.rim_type
@@ -48,10 +37,11 @@ export default {
                         [new THREE.Vector2( this.rimDims.axleDI / 2, this.rimDims.ribsPosition - this.rimDims.tAxle / 2 ), new THREE.Vector2( this.rimDims.axleDO / 2, this.rimDims.ribsPosition - this.rimDims.tAxle / 2 ), new THREE.Vector2( this.rimDims.axleDO / 2, this.rimDims.ribsPosition + this.rimDims.tAxle / 2 - this.rimDims.axleIntrWidth ), new THREE.Vector2( this.rimDims.axleDI / 2, this.rimDims.ribsPosition + this.rimDims.tAxle / 2 ), new THREE.Vector2( 0, this.rimDims.ribsPosition + this.rimDims.tAxle / 2 ) ]]
                     ;
                     var rib = new THREE.CylinderGeometry( this.rimDims.dRib / 2, this.rimDims.dRib / 2, ( this.rimDims.DI - this.rimDims.axleDO ) / 2, 4, 1, true ).rotateY( Math.PI / 4 );
+                    console.log(this.rimDims.DI - this.rimDims.axleDO);
                     const points = rib.attributes.position.array
-                    // for ( var i = 0; i < points.length; i+=3 ) {
-                    //     points[i+2] *= this.rimDims.tRib / this.rimDims.dRib;
-                    // }
+                    for ( var i = 0; i < points.length; i+=3 ) {
+                        points[i+2] *= this.rimDims.tRib / this.rimDims.dRib;
+                    }
                     // rib.setAttribute( 'position', points);
                     rib.attributes.position.needsUpdate = true;
 

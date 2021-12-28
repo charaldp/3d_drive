@@ -3,8 +3,10 @@
 namespace App\Models\Parts;
 
 use Illuminate\Database\Eloquent\Model;
-
+use App\Models\ModelUtilities;
 class Rim extends Model {
+    use ModelUtilities;
+
     protected $table = 'rims';
 
     protected $casts = [
@@ -12,28 +14,31 @@ class Rim extends Model {
     ];
 
     protected $fillable = [
+        'user_id',
         'type_dimensions',
         'rim_type',
     ];
 
+
     public function dimension_names() {
         return [
-            'DO' => 'rim_dimensions.DO',
-            'DI' => 'rim_dimensions.DI',
-            't' => 'rim_dimensions.t',
-            'intrWidth' => 'rim_dimensions.intrWidth',
-            'numRibs' => 'rim_dimensions.numRibs',
-            'tRib' => 'rim_dimensions.tRib',
-            'dRib' => 'rim_dimensions.dRib',
-            'ribsPosition' => 'rim_dimensions.ribsPosition',
-            'axleIntrWidth' => 'rim_dimensions.axleIntrWidth',
-            'axleDI' => 'rim_dimensions.axleDI',
-            'axleDO' => 'rim_dimensions.axleDO',
-            'tAxle' => 'rim_dimensions.tAxle',
+            'DO' => /*'rim_dimensions.*/'DO',
+            'DI' => /*'rim_dimensions.*/'DI',
+            't' => /*'rim_dimensions.*/'t',
+            'intrWidth' => /*'rim_dimensions.*/'intrWidth',
+            'numRibs' => /*'rim_dimensions.*/'numRibs',
+            'tRib' => /*'rim_dimensions.*/'tRib',
+            'dRib' => /*'rim_dimensions.*/'dRib',
+            'ribsPosition' => /*'rim_dimensions.*/'ribsPosition',
+            'axleIntrWidth' => /*'rim_dimensions.*/'axleIntrWidth',
+            'axleDI' => /*'rim_dimensions.*/'axleDI',
+            'axleDO' => /*'rim_dimensions.*/'axleDO',
+            'tAxle' => /*'rim_dimensions.*/'tAxle',
         ];
     }
 
     public static $creation_attributes = [
+        'id' => 0,
         'rim_type' => 'Ribs',
         'type_dimensions' => [
             "DO" => 0.43,
@@ -50,4 +55,5 @@ class Rim extends Model {
             "tAxle" => 0.02
         ],
     ];
+
 }

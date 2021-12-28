@@ -5,7 +5,17 @@ export default {
     ],
     data() {
         return {
-
+        }
+    },
+    watch: {
+        arguments() {
+            // console.log(this.mesh);
+            // this.mesh.dispose()
+            this.$parent.$parent.scene.remove(this.mesh)
+            this.rimGeo.dispose()
+            this.transferAguments()
+            this.fabricate()
+            this.addToScene()
         }
     },
     created() {

@@ -19,6 +19,7 @@ class Wheel extends Migration
             $table->unsignedBigInteger('tire_id');
             $table->unsignedBigInteger('rim_id');
             $table->string('name');
+            $table->timestamps();
         });
     }
 

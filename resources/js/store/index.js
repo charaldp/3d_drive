@@ -3,7 +3,7 @@ import {stateMerge} from 'vue-object-merge'
 export default {
     state: {
         stateData: {},
-        rim: {},
+        model: {},
     },
 
     getters: {
@@ -11,8 +11,8 @@ export default {
         getStateData(state){ //take parameter state
             return state.stateData
         },
-        getRim(state){ //take parameter state
-            return state.rim
+        getModel(state){ //take parameter state
+            return state.model
         },
     },
     mutations: {
@@ -20,8 +20,8 @@ export default {
         stateData(state, payload) {
             return state.stateData = Object.assign({}, state.stateData, payload.stateData)
         },
-        rim(state, payload) {
-            return state.rim = Object.assign({}, state.rim, payload.rim)
+        model(state, payload) {
+            return state.model = Object.assign({}, state.model, payload.model)
         },
         MERGE(state, value) {
 			stateMerge(state, value.changes, null, value.ignoreNull)

@@ -20,6 +20,7 @@ class Tire extends Migration
             $table->string('name');
             $table->string('tire_type')->default('flat');
             $table->json('type_dimensions');
+            $table->timestamps();
         });
     }
 

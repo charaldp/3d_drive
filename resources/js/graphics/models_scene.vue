@@ -73,9 +73,10 @@ export default {
             this.scene = new THREE.Scene();
 
             this.renderer = new THREE.WebGLRenderer( { antialias: true } );
-            this.renderer.setPixelRatio( window.devicePixelRatio );
+            const window_size = {width: window.innerWidth * 0.45, height: window.innerHeight * 0.95}
+            this.renderer.setPixelRatio( window_size.width / window_size.height );
             // console.log(this.$refs.container.innerWidth);
-            this.renderer.setSize( window.innerWidth * 0.98, window.innerHeight * 0.95);
+            this.renderer.setSize( window_size.width, window_size.height);
             // for ( var i = 0; i < this.components.length; i++ ) {
             //     var geo = new THREE.BufferGeometry();
             //     // Save root Group's transform in transformation array
@@ -89,7 +90,7 @@ export default {
             this.sceneCenter = new THREE.Vector3();//this.sceneGeometry.boundingSphere.center.clone();
             this.sceneGeometry.dispose();
             // camera
-            this.camera = new THREE.PerspectiveCamera( 40, window.innerWidth / window.innerHeight, 0.01 * this.totalLength, 50 * this.totalLength);
+            this.camera = new THREE.PerspectiveCamera( 40, window_size.width / window_size.height, 0.01 * this.totalLength, 50 * this.totalLength);
             this.camera.position.set( this.sceneCenter.x + this.totalLength, this.sceneCenter.y + this.totalLength, this.sceneCenter.z + this.totalLength );
             this.scene.add( this.camera );
 

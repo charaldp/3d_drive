@@ -18,10 +18,14 @@ class Rim extends Migration
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('material_id');
             $table->string('name');
-            $table->string('tire_type')->default('flat');
+            $table->string('rim_type')->default('flat');
             $table->json('type_dimensions');
+            $table->timestamps();
         });
 
+        Schema::table('rims', function($table) {
+            $table->foreign('user_id')->references('id')->on('users');
+        });
     }
 
     /**

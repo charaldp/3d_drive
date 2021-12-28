@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Models\Parts\Rim;
 
 class RimController extends Controller
@@ -28,7 +29,17 @@ class RimController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // dd(Auth::user() ,$request->user());
+
+        $validatedData = $request->validate([
+            'type_dimensions' => 'required',
+            'rim_type' => 'required',
+        ]);
+        $validatedData['user_id'] = Auth::user()->id;
+        // dd($validatedData);
+        $rim = Rim::create($validatedData);
+        return $rim;
+
     }
 
     /**
