@@ -51,6 +51,7 @@ export default {
     },
     created() {
         this.$store.commit('model', {model: this.rim_in, type: 'rim'});
+        // this.connection = new WebSocket("")
     },
     computed: {
         form_object() {
