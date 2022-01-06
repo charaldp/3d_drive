@@ -39,6 +39,7 @@ class Rim extends Model {
 
     public static $creation_attributes = [
         'id' => 0,
+        'name' => 'New Rim',
         'rim_type' => 'Ribs',
         'type_dimensions' => [
             "DO" => 0.43,
@@ -49,7 +50,7 @@ class Rim extends Model {
             "tRib" => 0.015,
             "dRib" => 0.030,
             "ribsPosition" => 0.12,
-            "axleIntrWidth" =>-0.01,
+            "axleIntrWidth" => 0,
             "axleDI" => 0.01,
             "axleDO" => 0.08,
             "tAxle" => 0.02

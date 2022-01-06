@@ -40,3 +40,10 @@ Route::PATCH('/rim/{rim}', 'RimController@update')->name('rim.update');
 Route::GET('/rim/{rim}', 'RimController@show')->name('rim.show');
 Route::DELETE('/rim/{rim}', 'RimController@destroy')->name('rim.destroy');
 
+Route::GET('/material', 'MaterialController@index')->name('material.index');
+Route::POST('/material', 'MaterialController@store')->name('material.store');
+Route::GET('/material/create', 'MaterialController@create')->name('material.create');
+Route::GET('/material/{material}/edit', 'MaterialController@edit')->name('material.edit');
+Route::PATCH('/material/{material}', 'MaterialController@update')->name('material.update');
+Route::GET('/material/{material}', 'MaterialController@show')->name('material.show');
+Route::DELETE('/material/{material}', 'MaterialController@destroy')->name('material.destroy');

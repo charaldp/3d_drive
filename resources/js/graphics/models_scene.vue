@@ -18,6 +18,7 @@ export default {
     name: 'models-scene',
     props: [
         'models',
+        'meshMaterial',
     ],
     data() {
         return {

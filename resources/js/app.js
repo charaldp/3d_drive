@@ -27,6 +27,8 @@ import storeData from "./store/index.js"
 // Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 // Vue.component('scene-component', require('./components/scene.vue').default);
 // Vue.component('scene-simple', require('./components/sceneSimple.vue').default);
+Vue.component('material-selector', require('./garage/fabrication/material_selector.vue').default);
+Vue.component('material-editor', require('./garage/fabrication/material_editor.vue').default);
 Vue.component('rim-editor', require('./garage/rim/rim_editor.vue').default);
 Vue.component('models-scene', require('./graphics/models_scene.vue').default);
 Vue.component('model', require('./graphics/model.vue').default);

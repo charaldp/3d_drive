@@ -3,6 +3,16 @@
         <div class="row justify-content-center">
             <div class="col-md-5">
                 <div class="portlet-header">
+                    <div>Rim Material</div>
+                </div>
+                <div class="portlet-body">
+                    <material-selector
+                        :name="'main'"
+                        :group="'rim'"
+                    >
+                    </material-selector>
+                </div>
+                <div class="portlet-header">
                     <div>Dimensions</div>
                 </div>
                 <div class="portlet-body">
@@ -41,6 +51,7 @@ export default {
     name: 'rim-editor',
     props: [
         'rim_in',
+        'user_materials',
         'dimension_names',
     ],
     mixins: [utilitiesMixin, ModelEditor],

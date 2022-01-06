@@ -4,7 +4,6 @@
             v-if="this.model_specifier == this.models.rim"
             :arguments="this.arguments"
             :meshMaterial="this.meshMaterial"
-
         >
         </rim>
         <tire

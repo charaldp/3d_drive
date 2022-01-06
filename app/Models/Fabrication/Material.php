@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Farication;
+namespace App\Models\Fabrication;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\ModelUtilities;
@@ -9,6 +9,11 @@ class Material extends Model
     use ModelUtilities;
 
     protected $table = 'materials';
+
+    protected $fillable = [
+        'material_type',
+        'three_material_options',
+    ];
 
     protected $casts = [
         'three_material_options' => 'array',
@@ -28,8 +33,9 @@ class Material extends Model
         ];
     }
 
-    protected $attributes = [
-        'material_type' => 'phong_aterial',
+    public static $creation_attributes = [
+        'id' => 0,
+        'material_type' => 'MeshBasicMaterial',
         'three_material_options' => ["shininess" => 50, "colour"  => "0x1b1b1b"],
     ];
 }
