@@ -3,7 +3,7 @@
         <select v-model="material[this.name]">
             <option v-for="(material, id) in this.materials" :key="id"
                 :value="id"
-            >{{material.type+' | '+material.name}}<button>Delete</button>
+            >{{material.three_material_type+' | '+material.name}}<button>Delete</button>
             </option>
         </select>
         <button>Add</button>
@@ -29,7 +29,7 @@ export default {
     },
     created() {
         let obj = {changes: {material: {}}};
-        obj[this.name] = {};
+        obj.changes.material[this.name] = {};
         this.$store.commit('MERGE', obj);
         this.getMaterials();
     },
@@ -38,7 +38,7 @@ export default {
     },
     methods: {
         getMaterials() {
-            axios.get('material', {})
+            axios.get('/material', {})
             .then(
                 response => {
                     this.materials = response.data;

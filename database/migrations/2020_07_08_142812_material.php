@@ -16,10 +16,11 @@ class Material extends Migration
         Schema::create('materials', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('user_id');
+            $table->string('name', 32);
             $table->unsignedDecimal('friction_static')->default(1);
             $table->unsignedDecimal('friction_sliding')->default(0.8);
             $table->unsignedDecimal('friction_rolling')->default(0.01);
-            $table->string('three_material_type');
+            $table->string('three_material_type', 32);
             $table->json('three_material_options');
             // $table->json('material_options')->default(["colour" => "0xd7d7d7", "roughness" => 0.17, "metalness" => 0.47, "reflectivity" => 1, "clearCoat" => 0.64, "clearCoatRoughness" => 0.22]);
         });

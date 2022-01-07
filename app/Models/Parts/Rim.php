@@ -15,8 +15,9 @@ class Rim extends Model {
 
     protected $fillable = [
         'user_id',
-        'type_dimensions',
+        'material_id',
         'rim_type',
+        'type_dimensions',
     ];
 
 
@@ -39,6 +40,7 @@ class Rim extends Model {
 
     public static $creation_attributes = [
         'id' => 0,
+        'material_id' => 0,
         'name' => 'New Rim',
         'rim_type' => 'Ribs',
         'type_dimensions' => [

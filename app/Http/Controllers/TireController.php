@@ -4,9 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Parts\Rim;
+use App\Models\Parts\Tire;
 
-class RimController extends Controller
+class TireController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -19,7 +19,7 @@ class RimController extends Controller
     }
 
     public function create() {
-        return view('models.rim.index')->with(['rim' => new Rim(Rim::$creation_attributes)]);
+        return view('models.tire.index')->with(['tire' => new Tire(Tire::$creation_attributes)]);
     }
     /**
      * Store a newly created resource in storage.
@@ -35,11 +35,11 @@ class RimController extends Controller
             'name' => 'required',
             'material_id' => 'required',
             'type_dimensions' => 'required',
-            'rim_type' => 'required',
+            'tire_type' => 'required',
         ]);
         $validatedData['user_id'] = Auth::user()->id;
         // dd($validatedData);
-        $rim = Rim::create($validatedData);
+        $rim = Tire::create($validatedData);
         return $rim;
 
     }

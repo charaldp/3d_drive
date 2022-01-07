@@ -18,7 +18,7 @@ export default {
     name: 'models-scene',
     props: [
         'models',
-        'meshMaterial',
+        // 'meshMaterial',
     ],
     data() {
         return {
@@ -43,7 +43,7 @@ export default {
     created() {
         this.meshMaterial = {
             tire: new THREE.MeshPhongMaterial( { shininess: 50, color : 0x1b1b1b } ),
-            rim: new THREE.MeshPhysicalMaterial( { color: 0xd7d7d7, roughness: 0.17, metalness: 0.47, reflectivity: 1, clearCoat: 0.64, clearCoatRoughness: 0.22 } ),
+            rim: new THREE.MeshPhysicalMaterial( { color: 0xd7d7d7, roughness: 0.17, metalness: 0.47, reflectivity: 1, clearcoat: 0.64, clearcoatRoughness: 0.22 } ),
             building: new THREE.MeshLambertMaterial( { color: 0xcccccc, opacity: 0.95, transparent: true } ),
             ground: new THREE.MeshBasicMaterial( { color: 0x77aa22, side: THREE.FrontSide, opacity: 0.65, transparent: true } )
         };

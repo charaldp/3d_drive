@@ -5,31 +5,33 @@
 <script>
 import MidelMixin from './ModelMixin';
 export default {
-    name: 'rim',
+    name: 'tire',
     mixins: [MidelMixin],
     data() {
         return {
             tireType: this.arguments.tireType,
             tireDims: this.arguments.tireDims,
-            meshMaterial: this.arguments.meshMaterial,
-            tireGeo: null
         }
     },
     methods: {
+        transferAguments() {
+            this.tireType = this.arguments.tire_type
+            this.tireDims = this.arguments.type_dimensions
+        },
         fabricate() {
-            switch( tireType ) {
+            var points;
+            switch( this.tireType ) {
                 case 'Flat':
-                    this.points = [new THREE.Vector2( tireDims.DI / 2, 0 ), new THREE.Vector2( tireDims.DO / 2, 0 ), new THREE.Vector2( tireDims.DO / 2, tireDims.t ), new THREE.Vector2( tireDims.DI / 2, tireDims.t )]
+                    points = [new THREE.Vector2( this.tireDims.DI / 2, 0 ), new THREE.Vector2( this.tireDims.DO / 2, 0 ), new THREE.Vector2( this.tireDims.DO / 2, this.tireDims.t ), new THREE.Vector2( this.tireDims.DI / 2, this.tireDims.t )]
                     break;
                 case 'Round':
-                    this.points = [new THREE.Vector2( tireDims.DI / 2, tireDims.intrWidth )]
+                    points = [new THREE.Vector2( this.tireDims.DI / 2, this.tireDims.intrWidth )]
                     for ( var i = 0; i < 16; i++ )
-                    this.points.push();
+                        points.push();
 
             }
-            this.tireGeo = new THREE.LatheGeometry( this.points, 64 ).rotateX( Math.PI / 2 );
-            this.meshOut = new THREE.Mesh( this.tireGeo, meshMaterial.tire.clone() );
-
+            this.geometry = new THREE.LatheGeometry( points, 64 ).rotateX( Math.PI / 2 );
+            this.mesh = new THREE.Mesh( this.geometry, this.meshMaterial.tire.clone() );
         }
     }
 }

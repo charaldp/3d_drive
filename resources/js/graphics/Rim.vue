@@ -16,7 +16,6 @@ export default {
         return {
             rimType: null,
             rimDims: null,
-            rimGeo: null,
         }
     },
     mounted() {
@@ -27,7 +26,6 @@ export default {
             this.rimDims = this.arguments.type_dimensions
         },
         fabricate() {
-            this.rimGeo
             var rimGeo = [];
             console.log(this.rimType);
             switch ( this.rimType ) {
@@ -61,8 +59,8 @@ export default {
             for ( var i = 0; i < this.points.length; i++ ) {
                 rimGeo.push(new THREE.LatheGeometry( this.points[i], 64 ).rotateX( Math.PI / 2 ));// + Transform ?
             }
-            this.rimGeo = mergeBufferGeometries(rimGeo)
-            this.mesh = new THREE.Mesh( this.rimGeo, this.meshMaterial.rim.clone() );
+            this.geometry = mergeBufferGeometries(rimGeo)
+            this.mesh = new THREE.Mesh( this.geometry, this.meshMaterial.rim.clone() );
 ///
         },
 

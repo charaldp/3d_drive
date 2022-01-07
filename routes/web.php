@@ -40,6 +40,14 @@ Route::PATCH('/rim/{rim}', 'RimController@update')->name('rim.update');
 Route::GET('/rim/{rim}', 'RimController@show')->name('rim.show');
 Route::DELETE('/rim/{rim}', 'RimController@destroy')->name('rim.destroy');
 
+Route::GET('/tire', 'TireController@index')->name('tire.index');
+Route::POST('/tire', 'TireController@store')->name('tire.store');
+Route::GET('/tire/create', 'TireController@create')->name('tire.create');
+Route::GET('/tire/{tire}/edit', 'TireController@edit')->name('tire.edit');
+Route::PATCH('/tire/{tire}', 'TireController@update')->name('tire.update');
+Route::GET('/tire/{tire}', 'TireController@show')->name('tire.show');
+Route::DELETE('/tire/{tire}', 'TireController@destroy')->name('tire.destroy');
+
 Route::GET('/material', 'MaterialController@index')->name('material.index');
 Route::POST('/material', 'MaterialController@store')->name('material.store');
 Route::GET('/material/create', 'MaterialController@create')->name('material.create');

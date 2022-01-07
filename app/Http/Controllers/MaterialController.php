@@ -16,8 +16,8 @@ class MaterialController extends Controller
      */
     public function index() {
         $id = Auth::user()->id;
-        dd($id);
-        $materials = Material::where('user_id', $id);
+        $materials = Material::where('user_id', $id)->get()->toArray();
+        // dd($materials);
         return $materials;
     }
 

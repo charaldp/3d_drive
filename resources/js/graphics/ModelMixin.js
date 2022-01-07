@@ -5,6 +5,7 @@ export default {
     ],
     data() {
         return {
+            geometry: null
         }
     },
     watch: {
@@ -12,7 +13,7 @@ export default {
             // console.log(this.mesh);
             // this.mesh.dispose()
             this.$parent.$parent.scene.remove(this.mesh)
-            this.rimGeo.dispose()
+            this.geometry.dispose()
             this.transferAguments()
             this.fabricate()
             this.addToScene()

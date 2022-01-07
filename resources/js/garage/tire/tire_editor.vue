@@ -16,13 +16,6 @@
                     <div>Dimensions</div>
                 </div>
                 <div class="portlet-body">
-                    <div class="form-group col-md-12">
-                        <label class="col-md-5 control-label" :for="'rim_name'">Name</label>
-                        <div class="col-md-5">
-                            <input type="text" class="form-control" :id="'rim_name'" style="text-align:right" v-model="model.name">
-                        </div>
-                        <label class="col-md-2 control-label" :for="'rim_name'">{{'mm'}}</label>
-                    </div>
                     <div v-for="(value, dimension) in this.model.type_dimensions" :key="dimension" class="form-group col-md-12">
                         <label class="col-md-5 control-label" :for="'rim_'+dimension" v-html="dimension_names[dimension]"></label>
                         <div class="col-md-5">
@@ -39,7 +32,7 @@
                 </div>
                 <div class="portlet-body">
                     <models-scene
-                        :models="[{...this.model,...{model_specifier: 'rim'}}]"
+                        :models="[{...this.model,...{model_specifier: 'tire'}}]"
                     >
                     </models-scene>
                 </div>
@@ -50,30 +43,30 @@
 
 <script>
 import {mapState} from 'vuex';
-import utilitiesMixin from '../../utilitiesMixin.js'
+import utilitiesMixin from '../../utilitiesMixin.js.js'
 import ModelEditor from '../ModelEditor.js'
 
 
 export default {
-    name: 'rim-editor',
+    name: 'tire-editor',
     props: [
-        'rim_in',
+        'tire_in',
         'user_materials',
         'dimension_names',
     ],
     mixins: [utilitiesMixin, ModelEditor],
     data() {
         return {
-            instance_name: 'rim',
+            instance_name: 'tire',
         };
     },
     created() {
-        this.$store.commit('model', {model: this.rim_in, type: 'rim'});
+        this.$store.commit('model', {model: this.tire_in, type: 'tire'});
         // this.connection = new WebSocket("")
     },
     computed: {
         form_object() {
-            return {name: this.model.name, material_id: this.material.rim.id, type_dimensions: this.model.type_dimensions, rim_type: this.model.rim_type}
+            return {name: this.model.name, material_id: this.material.tire.id, type_dimensions: this.model.type_dimensions, tire_type: this.model.tire_type}
         },
         ...mapState(['model', 'material']),
     },

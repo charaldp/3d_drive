@@ -11,7 +11,8 @@ class Material extends Model
     protected $table = 'materials';
 
     protected $fillable = [
-        'material_type',
+        'user_id',
+        'three_material_type',
         'three_material_options',
     ];
 
@@ -35,7 +36,7 @@ class Material extends Model
 
     public static $creation_attributes = [
         'id' => 0,
-        'material_type' => 'MeshBasicMaterial',
+        'three_material_type' => 'MeshBasicMaterial',
         'three_material_options' => ["shininess" => 50, "colour"  => "0x1b1b1b"],
     ];
 }
