@@ -8,6 +8,9 @@ use App\Models\Parts\Rim;
 
 class RimController extends Controller
 {
+    public function __construct() {
+        $this->middleware('auth');
+    }
     /**
      * Display a listing of the resource.
      *
@@ -30,18 +33,23 @@ class RimController extends Controller
     public function store(Request $request)
     {
         // dd(Auth::user() ,$request->user());
-
         $validatedData = $request->validate([
             'name' => 'required',
             'material_id' => 'required',
             'type_dimensions' => 'required',
             'rim_type' => 'required',
         ]);
+        // dd($validatedData);
         $validatedData['user_id'] = Auth::user()->id;
         // dd($validatedData);
         $rim = Rim::create($validatedData);
         return $rim;
 
+    }
+
+    public function edit($id)
+    {
+        return view('models.rim.index')->with(['rim' => Rim::find($id)]);
     }
 
     /**
@@ -52,7 +60,7 @@ class RimController extends Controller
      */
     public function show($id)
     {
-        //
+        return view('models.rim.index')->with(['rim' => Rim::find($id)]);
     }
 
     /**
@@ -64,7 +72,16 @@ class RimController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $validatedData = $request->validate([
+            'name' => 'required',
+            'material_id' => 'required',
+            'type_dimensions' => 'required',
+            'rim_type' => 'required',
+        ]);
+        $rim = Rim::find($id);
+        $rim->fill($validatedData);
+        $rim->update();
+        return $rim;
     }
 
     /**

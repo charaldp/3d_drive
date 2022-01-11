@@ -17,20 +17,34 @@ export default {
     },
     methods: {
         on_submit() {
-            var url = "/"+(this.model_mode == 'create' ? this.instance_name:+this.instance_name+"/"+this.model.id+"/edit")
+            var url = "/"+(this.model_mode == 'create' ? this.instance_name:this.instance_name+"/"+this.model.id)
             console.log(url, this.form_object);
-            axios.post(url, this.form_object)
-            .then(
-                response => {
-                    if (this.model_mode == 'create') {
-                        this.$store.commit('model', {model: response.data, type: this.instance_name})
-                        this.model_mode = 'edit';
+            this.model_mode
+            if (this.model_mode == 'create') {
+                axios.post(url, this.form_object)
+                .then(
+                    response => {
+                        if (this.model_mode == 'create') {
+                            this.$store.commit('model', {model: response.data, type: this.instance_name})
+                            this.model_mode = 'edit';
+                            this.$router.replace('/'+this.instance_name+"/"+this.model.id);
+                        }
                     }
-                }
-            )
-            .catch(error => {
-                console.error("There was an error!", error);
-            });
+                )
+                .catch(error => {
+                    console.error("There was an error!", error);
+                });
+            } else {
+                axios.patch(url, this.form_object)
+                .then(
+                    response => {
+                        this.$store.commit('model', {model: response.data, type: this.instance_name})
+                    }
+                )
+                .catch(error => {
+                    console.error("There was an error!", error);
+                });
+            }
         },
     },
 }

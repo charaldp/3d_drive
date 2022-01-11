@@ -1,9 +1,10 @@
 <template>
     <div>
-        <select v-model="material[this.name]">
-            <option v-for="(material, id) in this.materials" :key="id"
+        <select v-model="material[name]">
+            <option v-for="(a_material, id) in this.materials" :key="id"
                 :value="id"
-            >{{material.three_material_type+' | '+material.name}}<button>Delete</button>
+                :selected="material[name]==id"
+            >{{a_material.three_material_type+' | '+a_material.name}}
             </option>
         </select>
         <button>Add</button>

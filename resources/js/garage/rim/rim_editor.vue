@@ -7,7 +7,7 @@
                 </div>
                 <div class="portlet-body">
                     <material-selector
-                        :name="'main'"
+                        :name="'material_id'"
                         :group="'rim'"
                     >
                     </material-selector>
@@ -68,12 +68,15 @@ export default {
         };
     },
     created() {
+        if (this.rim_in.id != 0) {
+            this.model_mode = 'edit';
+        }
         this.$store.commit('model', {model: this.rim_in, type: 'rim'});
         // this.connection = new WebSocket("")
     },
     computed: {
         form_object() {
-            return {name: this.model.name, material_id: this.material.rim.id, type_dimensions: this.model.type_dimensions, rim_type: this.model.rim_type}
+            return {name: this.model.name, material_id: this.material.material_id, type_dimensions: this.model.type_dimensions, rim_type: this.model.rim_type}
         },
         ...mapState(['model', 'material']),
     },

@@ -17,7 +17,7 @@ class Rim extends Migration
             $table->bigIncrements('id');
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('material_id');
-            $table->string('name');
+            $table->string('name')->default('Rim');
             $table->string('rim_type')->default('flat');
             $table->json('type_dimensions');
             $table->timestamps();
