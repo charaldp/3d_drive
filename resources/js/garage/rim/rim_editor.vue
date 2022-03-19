@@ -68,6 +68,7 @@ export default {
         };
     },
     created() {
+        console.log(this.rim_in.id, this.model_mode);
         if (this.rim_in.id != 0) {
             this.model_mode = 'edit';
         }

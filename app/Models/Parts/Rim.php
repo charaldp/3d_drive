@@ -16,6 +16,7 @@ class Rim extends Model {
     protected $fillable = [
         'user_id',
         'material_id',
+        'name',
         'rim_type',
         'type_dimensions',
     ];

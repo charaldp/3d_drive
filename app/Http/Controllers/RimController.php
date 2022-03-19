@@ -22,7 +22,9 @@ class RimController extends Controller
     }
 
     public function create() {
-        return view('models.rim.index')->with(['rim' => new Rim(Rim::$creation_attributes)]);
+        $rim = new Rim(Rim::$creation_attributes);
+        $rim->id = 0;
+        return view('models.rim.index')->with(['rim' => $rim]);
     }
     /**
      * Store a newly created resource in storage.

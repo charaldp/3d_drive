@@ -11,6 +11,10 @@ window.THREE = require('three');
 import Vuex from 'vuex';
 import { mapState } from 'vuex';
 import storeData from "./store/index.js"
+
+import VueRouter from 'vue-router'
+Vue.use(VueRouter)
+
 // import VueThreejs from 'vue-threejs'
 // Vue.use(VueThreejs)
 /**
@@ -51,6 +55,14 @@ const store = new Vuex.Store(
     storeData
  )
 
+ const routes = [];
+
+ const router = new VueRouter({
+    mode: 'history',
+    routes // short for `routes: routes`
+  })
+
+
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
@@ -60,6 +72,7 @@ const store = new Vuex.Store(
 const app = new Vue({
     el: '#app',
     store, //vuex
+    router,
     data() {
         return {
         }
