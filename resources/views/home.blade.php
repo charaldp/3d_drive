@@ -8,7 +8,7 @@
     @foreach($user->rims as $rim)
     <tr>
         <td>{{$rim->id}}</td>
-        <td>{{$rim->name}}</td>
+        <td><a href="{{route('rim.edit', $rim->id)}}">{{$rim->name}}</a></td>
     </tr>
     @endforeach
     <button class="brn btn-success"><a href="{{route('rim.create')}}">Create Rim</a></button>
