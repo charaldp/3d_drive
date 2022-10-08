@@ -35,7 +35,7 @@
 	<script src="resources/js/Models/Tire.js"></script>
 	<script src="resources/js/Models/Rim.js"></script>
 	<?php
-			$file = @$_GET[json];
+			$file = @$_GET['json'];
 			// a json file is provided as an argument at the php file as: ?json=<JSONFilename> (no filetype required)
 			// echo $file;
 		?>

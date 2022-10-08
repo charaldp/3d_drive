@@ -8,34 +8,34 @@
 			body { margin: 0; }
 			canvas { block };/*width: 100%; height: 100% };*/
 		</style>
+        <script src="js/three/csg.js"></script>
+        <script src="js/three/ThreeCSG.js"></script>
+        <script src="js/Utils.js"></script>
+        <script src="js/ammo.js"></script>
+
+        <script src="js/jquery-1.9.1.js"></script>
+        <script src="js/jquery-migrate-1.2.1.min.js"></script>
+        <!-- <script src="js/processing.min.js"></script> -->
+        <script src="js/three/three.min.js"></script>
+        <script src="js/three/objects/Sky.js"></script>
+        <script src="js/three/dat.gui.min.js"></script>
+        <script src="js/three/controls/OrbitControls.js"></script>
+        <script src="js/three/controls/FlyControls.js"></script>
+        <script src="js/three/controls/DeviceOrientationControls.js"></script>
+        <script src="js/three/controls/MapControls.js"></script>
+        <script src="js/three/controls/FirstPersonControls.js"></script>
+        <script src="js/three/controls/TransformControls.js"></script>
+        <script src="js/vehicle/Wheel.js"></script>
+        <script src="js/vehicle/Car.js"></script>
+        <script src="js/vehicle/Engine.js"></script>
+        <script src="js/vehicle/Phys.js"></script>
+        <script src="js/Models/Tire.js"></script>
+        <script src="js/Models/Rim.js"></script>
 	</head>
 	<body>
 
-	<script src="js/three/csg.js"></script>
-	<script src="js/three/ThreeCSG.js"></script>
-	<script src="js/Utils.js"></script>
-	<script src="js/ammo.js"></script>
-
-	<script src="js/jquery-1.9.1.js"></script>
-	<script src="js/jquery-migrate-1.2.1.min.js"></script>
-	<!-- <script src="js/processing.min.js"></script> -->
-	<script src="js/three/three.min.js"></script>
-	<script src="js/three/objects/Sky.js"></script>
-	<script src="js/three/dat.gui.min.js"></script>
-	<script src="js/three/controls/OrbitControls.js"></script>
-	<script src="js/three/controls/FlyControls.js"></script>
-	<script src="js/three/controls/DeviceOrientationControls.js"></script>
-	<script src="js/three/controls/MapControls.js"></script>
-	<script src="js/three/controls/FirstPersonControls.js"></script>
-	<script src="js/three/controls/TransformControls.js"></script>
-	<script src="vehicle/Wheel.js"></script>
-	<script src="vehicle/Car.js"></script>
-	<script src="vehicle/Engine.js"></script>
-	<script src="vehicle/Phys.js"></script>
-	<script src="Models/Tire.js"></script>
-	<script src="Models/Rim.js"></script>
 	<?php
-			$file = @$_GET[json];
+			$file = @$_GET['json'];
 			// a json file is provided as an argument at the php file as: ?json=<JSONFilename> (no filetype required)
 			// echo $file;
 		?>
