@@ -35,7 +35,7 @@
 	<script src="Models/Tire.js"></script>
 	<script src="Models/Rim.js"></script>
 	<?php
-			$file = @$_GET[json];
+			$file = @$_GET['json'];
 			// a json file is provided as an argument at the php file as: ?json=<JSONFilename> (no filetype required)
 			// echo $file;
 		?>
@@ -381,7 +381,7 @@
 			throttle += ( up ? ( throttle < 2 ? 0.05 * timestep : 0 ) : ( throttle > 1 ? - 0.1 * timestep * (throttle - 1) : 0 ) );
 			brake += ( down ? ( brake < 1 ? 0.2 * timestep : 0 ) : ( brake > 0 ? - 0.4 * timestep * brake : 0 ) );
 			steerSpeed = Math.min( 0.05 * car.maxSpeed / Math.abs(car.speed), 1) * ( (left ? 0.6 * timestep : 0) - (right ? 0.6 * timestep : 0) ) - (!(left || right) ?  timestep * car.ackermanSteering.steeringWheelPosition : 0);
-			console.log(steerSpeed, car.maxSpeed);
+			// console.log(steerSpeed, car.maxSpeed);
 			car.transmission.clutch += !clutch ? (car.transmission.clutch < 1 ? 0.05 * timestep : 0 ) : (car.transmission.clutch > 0 ? - 0.05 * timestep * car.transmission.clutch : 0 );
 			if (car.transmission.clutch < 0) car.transmission.clutch = 0;
 			HUD.innerHTML = 'Engine RPM : ' + String( (car.engine._rot * 60).toFixed() ) +

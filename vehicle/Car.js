@@ -80,7 +80,7 @@ class Car{
 
     updateLoad( ) {
       this.engine._load_inertia = Phys.activationFunction( this.transmission.clutch, 0.5, 15 ) * this._mass * this._wheel.R * (this.transmission.gear === false ? 0 : Math.pow(Math.abs(this.transmission.gearbox[this.transmission.gear]), 2 ) );
-      console.log( this.transmission.clutch,this._mass, this._wheel, this.transmission.gear );
+      // console.log( this.transmission.clutch,this._mass, this._wheel, this.transmission.gear );
     }
 
     updateClutchConnection( throttle, brake, timestep ) {
