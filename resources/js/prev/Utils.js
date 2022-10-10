@@ -46,57 +46,50 @@ class Utils {
     return string;
   }
 
-  static mergeGroupChildren( geo, aGroup, matArray ) {
-    for (var i = 0; i < aGroup.children.length;i++) {
-      if ( aGroup.children[i].isMesh ) {
-        var tempGeo = new THREE.Geometry();
-        tempGeo.mergeMesh( aGroup.children[i].clone() );
-        for (var j = 0; j < matArray.length; j++) {
-          var str = matArray[j][6].split('');
-          for (var k = 0; k < 3; k++) {
-            switch (str[k]) {
-              case 'X':
-                tempGeo.rotateX(matArray[j][0]);
-                break;
-              case 'Y':
-                tempGeo.rotateY(matArray[j][1]);
-                break;
-              case 'Z':
-                tempGeo.rotateZ(matArray[j][2]);
+  static mergeGroupChildren( array, aGroup, matArray ) {
+    // console.log('aGroup', aGroup);
+    if (!aGroup.children) {
+        // console.log('isGeometry');
+            var tempGeo = aGroup.clone();
+            for (var j = 0; j < matArray.length; j++) {
+                var str = matArray[j][6].split('');
+                for (var k = 0; k < 3; k++) {
+                    switch (str[k]) {
+                    case 'X':
+                        tempGeo.rotateX(matArray[j][0]);
+                        break;
+                    case 'Y':
+                        tempGeo.rotateY(matArray[j][1]);
+                        break;
+                    case 'Z':
+                        tempGeo.rotateZ(matArray[j][2]);
+                    }
+                }
+                console.log(matArray[j][0], matArray[j][1], matArray[j][2]);
+                console.log(matArray[j][3], matArray[j][4], matArray[j][5]);
+                tempGeo.translate(matArray[j][3], matArray[j][4], matArray[j][5]);
             }
-          }
-          tempGeo.translate(matArray[j][3], matArray[j][4], matArray[j][5]);
+        array.push(tempGeo.clone().toNonIndexed());
+        return;
+    }
+    for (var i = 0; i < aGroup.children.length;i++) {
+        // console.log('aGroup', aGroup.children[i]);
+        if ( aGroup.children[i].isMesh ) {
+            // console.log('isMesh', aGroup.children[i].geometry, aGroup.children[i].children);
+            matArray.unshift([aGroup.children[i].rotation.x, aGroup.children[i].rotation.y, aGroup.children[i].rotation.z,
+                aGroup.children[i].position.x, aGroup.children[i].position.y, aGroup.children[i].position.z ,aGroup.children[i].rotation.order]);
+            Utils.mergeGroupChildren( array, aGroup.children[i].geometry, matArray );
+        } else {
+            // Save the children's transform
+            matArray.unshift([aGroup.children[i].rotation.x, aGroup.children[i].rotation.y, aGroup.children[i].rotation.z,
+                            aGroup.children[i].position.x, aGroup.children[i].position.y, aGroup.children[i].position.z ,aGroup.children[i].rotation.order]);
+            // Recursive Call	on Group's children
+            Utils.mergeGroupChildren( array, aGroup.children[i], matArray );
+
         }
-        geo.merge(tempGeo.clone());
-      } else {
-
-        // Save the children's transform
-        matArray.unshift([aGroup.children[i].rotation.x, aGroup.children[i].rotation.y, aGroup.children[i].rotation.z,
-                          aGroup.children[i].position.x, aGroup.children[i].position.y, aGroup.children[i].position.z ,aGroup.children[i].rotation.order]);
-        // Recursive Call	on Group's children
-        Utils.mergeGroupChildren( geo, aGroup.children[i], matArray );
-
-      }
     }
-  }
+}
 
-  static computeSingleGeometry( group ) {
-    var geo = new THREE.Geometry();
-    if (group.children.length > 1 && group.children[0].isGroup) {
-      for (var i = 0; i < group.children.length; i++) {
-        // Use the group's transforn then the current subgroup's transfrom
-        Utils.mergeGroupChildren( geo, group.children[i], [[group.children[i].rotation.x, group.children[i].rotation.y, group.children[i].rotation.z,
-          group.children[i].position.x, group.children[i].position.y, group.children[i].position.z, group.children[i].rotation.order],
-          [group.rotation.x, group.rotation.y, group.rotation.z,
-            group.position.x, group.position.y, group.position.z, group.rotation.order]] );
-      }
-    } else {
-      // Use the group's transforn
-      Utils.mergeGroupChildren( geo, group, [[group.rotation.x, group.rotation.y, group.rotation.z,
-        group.position.x, group.position.y, group.position.z, group.rotation.order]] );
-    }
-    return geo;
-  }
 }
 
 export default {Utils};

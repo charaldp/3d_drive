@@ -10,10 +10,12 @@ window.Vue = require('vue');
 window.THREE = require('three');
 import Vuex from 'vuex';
 import { mapState } from 'vuex';
+import * as Three from 'three';
 import storeData from "./store/index.js"
 
 import VueRouter from 'vue-router'
 Vue.use(VueRouter)
+Vue.use(Three)
 
 // import VueThreejs from 'vue-threejs'
 // Vue.use(VueThreejs)
@@ -29,7 +31,7 @@ Vue.use(VueRouter)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
 // Vue.component('example-component', require('./components/ExampleComponent.vue').default);
-// Vue.component('scene-component', require('./components/scene.vue').default);
+Vue.component('scene-component', require('./components/scene.vue').default);
 // Vue.component('scene-simple', require('./components/sceneSimple.vue').default);
 Vue.component('material-selector', require('./garage/fabrication/material_selector.vue').default);
 Vue.component('material-editor', require('./garage/fabrication/material_editor.vue').default);

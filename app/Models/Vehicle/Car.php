@@ -70,10 +70,10 @@ class Car extends Vehicle
               }
             }],
             \"engine\" : {
-              \"shaft_inertia\" : 50,
-              \"rev_limit\" : 116.66,
+              \"shaft_inertia\" : 10,
+              \"rev_limit\" : 186.66,
               \"idle_rot\" : 17.5,
-              \"maximum_hp\" : 390
+              \"maximum_hp\" : 490
             },
             \"clutch\" : {
               \"clutchFrictionCoeff\" : 0
@@ -82,7 +82,7 @@ class Car extends Vehicle
               \"gearbox\" : [ -0.15, 0.163, 0.262, 0.38, 0.52, 0.68, 0.87 ]
             }
           },
-          \"mass\" : 2000,
+          \"mass\" : 3000,
           \"geometry\" : {
             \"creationType\" : \"points2D\",
             \"pointArray\" : [
