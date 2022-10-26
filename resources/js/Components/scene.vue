@@ -123,23 +123,23 @@
                 // renderer.setPixelRatio( container.devicePixelRatio );
                 // renderer.setSize( container.innerWidth, container.innerHeight );
                 // document.body.appendChild( renderer.domElement );
-                // this.HUD = document.createElement('div');
-                // this.overlay = document.createElement('div');
-                // this.HUD.style.position = 'absolute';
-                // this.overlay.style.position = 'absolute';
-                //this.HUD.style.zIndex = 1;    // if you still don't see the label, try uncommenting this
-                // this.HUD.style.width = 100;
-                // this.HUD.style.height = 100;
-                // this.overlay.style.width = 100;
-                // this.overlay.style.height = 100;
-                // this.HUD.style.backgroundColor = "transparent";
-                // this.HUD.innerHTML = "";
-                // this.HUD.style.top = '97%';//200 + 'px';
-                // this.overlay.innerHTML = "";
-                // this.overlay.style.top = '0%';//200 + 'px';
-                // this.HUD.style.left = 20 + 'px';
-                // document.body.appendChild(this.HUD);
-                // document.body.appendChild(this.overlay);
+                this.HUD = document.createElement('div');
+                this.overlay = document.createElement('div');
+                this.HUD.style.position = 'absolute';
+                this.overlay.style.position = 'absolute';
+                this.HUD.style.zIndex = 1;    // if you still don't see the label, try uncommenting this
+                this.HUD.style.width = 100;
+                this.HUD.style.height = 100;
+                this.overlay.style.width = 100;
+                this.overlay.style.height = 100;
+                this.HUD.style.backgroundColor = "transparent";
+                this.HUD.innerHTML = "";
+                this.HUD.style.top = '97%';//200 + 'px';
+                this.overlay.innerHTML = "";
+                this.overlay.style.top = '0%';//200 + 'px';
+                this.HUD.style.left = 20 + 'px';
+                this.$refs.container.appendChild(this.HUD);
+                this.$refs.container.appendChild(this.overlay);
                 var geometries_array = [];
                 for ( var i = 0; i < components.length; i++ ) {
                     // Save root Group's transform in transformation array
@@ -403,18 +403,18 @@
                 this.brake += ( this.down ? ( this.brake < 1 ? 0.2 * this.timestep : 0 ) : ( this.brake > 0 ? - 0.4 * this.timestep * this.brake : 0 ) );
                 this.steerSpeed = Math.min( 0.05 * this.car.maxSpeed / Math.abs(this.car.speed), 1) * ( (this.left ? 0.6 * this.timestep : 0) - (this.right ? 0.6 * this.timestep : 0) ) - (!(this.left || this.right) ?  this.timestep * this.car.ackermanSteering.steeringWheelPosition : 0);
                 // console.log(this.steerSpeed, this.car.maxSpeed);
-                this.car.transmission.clutch += !this.clutch ? (this.car.transmission.clutch < 1 ? 0.05 * this.timestep : 0 ) : (this.car.transmission.clutch > 0 ? - 0.05 * this.timestep * this.car.transmission.clutch : 0 );
-                // if (this.car.transmission.clutch < 0) this.car.transmission.clutch = 0;
-                // HUD.innerHTML = 'Engine RPM : ' + String( (this.car.engine._rot * 60).toFixed() ) +
-                //     ' , Speed : ' + String( ( this.car.speed * 3.6 ).toFixed(1) ) +
-                //     ' , Throttle : ' + String( this.throttle.toFixed(1) ) +
-                //     ' , Gear : ' + String( this.car.transmission.gear === false ? 'N' : (this.car.transmission.gear !== 0 ? this.car.transmission.gear : 'R') ) +
-                //     ' , Accelaration : ' + String( this.car.acceleration.toFixed(1) ) +
-                //     ' , Brake : ' + String( brake.toFixed(1) ) +
-                //     ' , Steering : ' +	String( (this.car.ackermanSteering.steeringWheelPosition).toFixed(1) ) +
-                //     ' , Clutch : ' + String( this.car.transmission.clutch.toFixed(1) ) +
-                //     ' , Power : ' + String( this.car.engine._currentPower.toFixed() ) +
-                //     ' , Torque : ' + String( this.car.engine._currentTorque.toFixed() );
+                this.car.transmission.clutch += !this.clutch ? (this.car.transmission.clutch < 1 ? 0.05 * this.timestep : 0 ) : (this.car.transmission.clutch > 0 ? - 0.2 * this.timestep * this.car.transmission.clutch : 0 );
+                if (this.car.transmission.clutch < 0) this.car.transmission.clutch = 0;
+                this.HUD.innerHTML = 'Engine RPM : ' + String( (this.car.engine._rot * 60).toFixed() ) +
+                    ' , Speed : ' + String( ( this.car.speed * 3.6 ).toFixed(1) ) +
+                    ' , Throttle : ' + String( this.throttle.toFixed(1) ) +
+                    ' , Gear : ' + String( this.car.transmission.gear === false ? 'N' : (this.car.transmission.gear !== 0 ? this.car.transmission.gear : 'R') ) +
+                    ' , Accelaration : ' + String( this.car.acceleration.toFixed(1) ) +
+                    ' , Brake : ' + String( this.brake.toFixed(1) ) +
+                    ' , Steering : ' +	String( (this.car.ackermanSteering.steeringWheelPosition).toFixed(1) ) +
+                    ' , Clutch : ' + String( this.car.transmission.clutch.toFixed(1) ) +
+                    ' , Power : ' + String( this.car.engine._currentPower.toFixed() ) +
+                    ' , Torque : ' + String( this.car.engine._currentTorque.toFixed() );
                 // sound.setVolume(Math.min(Math.abs(speed.length()) / 20, 0.5));
                 // console.log(this.car.speed.length());
 

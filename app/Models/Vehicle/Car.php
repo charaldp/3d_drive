@@ -71,7 +71,7 @@ class Car extends Vehicle
             }],
             \"engine\" : {
               \"shaft_inertia\" : 10,
-              \"rev_limit\" : 186.66,
+              \"rev_limit\" : 126.66,
               \"idle_rot\" : 17.5,
               \"maximum_hp\" : 490
             },

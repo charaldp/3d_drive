@@ -65,8 +65,6 @@ class Utils {
                         tempGeo.rotateZ(matArray[j][2]);
                     }
                 }
-                console.log(matArray[j][0], matArray[j][1], matArray[j][2]);
-                console.log(matArray[j][3], matArray[j][4], matArray[j][5]);
                 tempGeo.translate(matArray[j][3], matArray[j][4], matArray[j][5]);
             }
         array.push(tempGeo.clone().toNonIndexed());
