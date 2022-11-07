@@ -135,7 +135,7 @@
                 this.HUD.style.backgroundColor = "transparent";
                 this.HUD.innerHTML = "";
                 this.HUD.style.top = '97%';//200 + 'px';
-                this.overlay.innerHTML = "";
+                this.overlay.innerHTML = "Throttle, Brake, Steering: Arrow Keys, Clutch: V, Gears 1-6: Q-A-W-S-E-D, Reverse Gear: R";
                 this.overlay.style.top = '0%';//200 + 'px';
                 this.HUD.style.left = 20 + 'px';
                 this.$refs.container.appendChild(this.HUD);
