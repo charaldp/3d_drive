@@ -13,7 +13,7 @@ class Engine {
 
   updateEngineState( throttle, timestep, handleLoadState ) {
     if (this._rot <= 0) this._rot = 0.001;
-    this._currentPower = ( throttle * Math.pow(this._rot / this._idle_rot, 1.2 ) - Math.pow(this._rot / this._idle_rot, 1.4)) * this._maximumHP * this._idle_rot / this._rev_limit;
+    this._currentPower = ( throttle * Math.pow(this._rot / this._idle_rot, 1.2 ) - Math.pow(this._rot / this._idle_rot, 1.3)) * this._maximumHP * this._idle_rot / this._rev_limit;
     // if ( this._currentPower > this._maximumHP ) this._currentPower = this._maximumHP;
     this._currentTorque = this._rot < 2 ? (throttle > 1.2 ? 50 : (this._rot < 0 ? 0 : -1000)) : 118.675 * this._currentPower / this._rot;
     this._rot += timestep * this._currentTorque / (this._shaft_inertia + ( handleLoadState ? this._load_inertia : 0 ) );// N * m / ( kg * m ^ 2 ) = N / (kg * m);

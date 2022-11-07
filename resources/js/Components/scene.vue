@@ -102,7 +102,7 @@
                         building: new Three.MeshLambertMaterial( { color: 0xcccccc, opacity: 0.95, transparent: true } ),
                         ground: new Three.MeshBasicMaterial( { color: 0x77aa22, side: Three.FrontSide, opacity: 0.65, transparent: true } )
                     };
-                    var wheel = new Wheel.Wheel( vehicle.components.wheel[0].DI, vehicle.components.wheel[0].DO, vehicle.components.wheel[0].t, vehicle.components.wheel[0].tireType, vehicle.components.wheel[0].tireDims, vehicle.components.wheel[0].rimType, vehicle.components.wheel[0].rimDims,
+                    var wheel = new Wheel.Wheel( vehicle.components.wheel[0].DO, vehicle.components.wheel[0].DI, vehicle.components.wheel[0].t, vehicle.components.wheel[0].tireType, vehicle.components.wheel[0].tireDims, vehicle.components.wheel[0].rimType, vehicle.components.wheel[0].rimDims,
                         vehicle.components.wheel[0].pressure, vehicle.components.wheel[0].frictionOptions, this.meshMaterial );
                     var transmission = {clutch: 1, clutchFrictionCoeff: vehicle.components.clutch.clutchFrictionCoeff, gear: false, gearbox: vehicle.components.transmission.gearbox };
                     console.log(vehicle.components.wheel[0].DI, vehicle.components.wheel[0].DO, vehicle.components.wheel[0].t, vehicle.components.wheel[0].tireType, vehicle.components.wheel[0].tireDims, vehicle.components.wheel[0].rimType, vehicle.components.wheel[0].rimDims,
@@ -392,7 +392,8 @@
                 // this.render();
             // },
             // render() {
-                this.timestep = this.timer2 - this.timer1;
+                // this.timestep = this.timer2 - this.timer1;
+                this.timestep = 0.5;
                 // timestep = clock.getDelta();
                 this.timer1 = performance.now();
                 // console.log(timer1);
