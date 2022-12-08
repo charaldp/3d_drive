@@ -38,6 +38,7 @@ class Car{
       this.engine = engine;
       this.transmission = transmission;
       this._mass = mass;
+      this.position = 0;//new THREE.Vector3( 0, 0, 0 );
       this.speed = 0;//new THREE.Vector3( 0, 0, 0 );
       this.acceleration = 0;//new THREE.Vector3( 0, 0, 0 );
       this._differential_rot = 0;
@@ -75,9 +76,9 @@ class Car{
       let th_out = Math.PI / 2 - Math.atan( 1 / Math.tan( Math.abs(this.ackermanSteering.steeringWheelPosition) ) + this.frontWheelsAxlesWidth / this.length );
       for ( var i = 0; i < this.wheelMatrices.length; i++ ) {
         if ( i == 2 || i == 3 )
-          this.wheelMatrices[i][1].copy(this.wheelMatrices[i][0].clone().multiply((new THREE.Matrix4()).makeRotationY( (i - 2.5/* Index 2 and3*/) * this.ackermanSteering.steeringWheelPosition < 0 ? this.ackermanSteering.steeringWheelPosition : Math.sign(this.ackermanSteering.steeringWheelPosition) * th_out )).multiply((new THREE.Matrix4()).makeRotationZ( -this.speed / ( this._wheel.R *  Math.PI / 2) * timestep * ( i % 2 == 0 ? 1 : -1 ))));
+          this.wheelMatrices[i][1].copy(this.wheelMatrices[i][0].clone().multiply((new THREE.Matrix4()).makeRotationY( (i - 2.5/* Index 2 and3*/) * this.ackermanSteering.steeringWheelPosition < 0 ? this.ackermanSteering.steeringWheelPosition : Math.sign(this.ackermanSteering.steeringWheelPosition) * th_out )).multiply((new THREE.Matrix4()).makeRotationZ( this.position / ( this._wheel.R *  Math.PI / 2) * timestep * ( i % 2 == 0 ? 1 : -1 ))));
         else
-          this.wheelMatrices[i][1].copy(this.wheelMatrices[i][0].clone().multiply((new THREE.Matrix4()).makeRotationZ( -this.speed / ( this._wheel.R *  Math.PI / 2) * timestep * ( i % 2 == 0 ? 1 : -1 ))));
+          this.wheelMatrices[i][1].copy(this.wheelMatrices[i][0].clone().multiply((new THREE.Matrix4()).makeRotationZ( this.position / ( this._wheel.R *  Math.PI / 2) * timestep * ( i % 2 == 0 ? 1 : -1 ))));
       }
       this.ackermanSteering.ackermanPoint = ( this.ackermanSteering.steeringWheelPosition > 0 ? 1 : -1 ) * ( this.length / Math.tan(th_out) - this.frontWheelsAxlesWidth / 2 );
     }
@@ -109,6 +110,7 @@ class Car{
       this._differential_rot -= Phys.Phys.activationFunction( brake, 0.5, 15 ) * timestep * this._differential_rot / 5;
       let tempSpeed = this.speed;
       this.speed = this._differential_rot * this._wheel.R;
+      this.position += this.speed * 5 * timestep;
       this.acceleration = ( this.speed - tempSpeed ) / ( timestep / 1000 );
     }
 
@@ -157,7 +159,7 @@ class Car{
       for ( var i = 1; i < frontToRearPoints.length; i++ )
         extrudeShape.lineTo( frontToRearPoints[i][0], frontToRearPoints[i][1] );
       for ( var i = 0; i < wheelsCentersPositions.length; i++ )
-        extrudeShape.absarc( wheelsCentersPositions[i][0], 0, radius + bevelThickness, Math.PI, 0, true );
+        extrudeShape.absarc( wheelsCentersPositions[i][0], 0, radius + 2 * bevelThickness, Math.PI, 0, true );
 			var extrudeSettings = {
 				steps: 1,
 				depth: width - 2 * bevelThickness,
