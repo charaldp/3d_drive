@@ -1,5 +1,6 @@
 <template>
-
+    <div ref="material_container">
+    </div>
 </template>
 
 <script>

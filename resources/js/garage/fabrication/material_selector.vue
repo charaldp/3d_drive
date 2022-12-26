@@ -1,9 +1,8 @@
 <template>
     <div>
         <select v-model="material[name]">
-            <option v-for="(a_material, id) in this.materials" :key="id"
+            <option v-for="(a_material, id) in this.materials" :key="id" @change="onMaterialChange"
                 :value="id"
-                :selected="material[name]==id"
             >{{a_material.three_material_type+' | '+a_material.name}}
             </option>
         </select>
@@ -48,7 +47,14 @@ export default {
             .catch(error => {
                 console.error("There was an error!", error);
             });
-        }
+        },
+        onMaterialChange(event) {
+            if (event.target.options.selectedIndex > -1) {
+                const value = event.target.options[event.target.options.selectedIndex].value;
+                this.$store.commit('MERGE', {type: "material_selection", material_name: this.name, material_id: value})
+
+            }
+        },
     }
 }
 </script>

@@ -73,6 +73,7 @@ export default {
             this.model_mode = 'edit';
         }
         this.$store.commit('model', {model: this.rim_in, type: 'rim'});
+        this.$store.commit('material', {material: {material_id: this.model.material_id}, type: 'rim'});
         // this.connection = new WebSocket("")
     },
     computed: {
