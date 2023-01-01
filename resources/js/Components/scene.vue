@@ -26,6 +26,7 @@
     import Wheel from './Wheel.js';
     import Car from './Car.js';
     import Engine from './Engine.js';
+    import Construction from './Construction.js';
     import Phys from './Phys.js';
     import Tire from '../Models/Tire.js';
     import Rim from '../Models/Rim.js';
@@ -100,6 +101,8 @@
                         tire: new Three.MeshPhongMaterial( { shininess: 50, color : 0x1b1b1b } ),
                         rim: new Three.MeshPhysicalMaterial( { color: 0xd7d7d7, roughness: 0.17, metalness: 0.47, reflectivity: 1, clearCoat: 0.64, clearCoatRoughness: 0.22 } ),
                         building: new Three.MeshLambertMaterial( { color: 0xcccccc, opacity: 0.95, transparent: true } ),
+                        road: new Three.MeshBasicMaterial( { color: 0x333333} ),
+                        line: new Three.MeshBasicMaterial( { color: 0xffff1a} ),
                         ground: new Three.MeshBasicMaterial( { color: 0x77aa22, side: Three.FrontSide, opacity: 0.65, transparent: true } )
                     };
                     var wheel = new Wheel.Wheel( vehicle.components.wheel[0].DO, vehicle.components.wheel[0].DI, vehicle.components.wheel[0].t, vehicle.components.wheel[0].tireType, vehicle.components.wheel[0].tireDims, vehicle.components.wheel[0].rimType, vehicle.components.wheel[0].rimDims,
@@ -134,7 +137,7 @@
                 this.overlay.style.height = 100;
                 this.HUD.style.backgroundColor = "transparent";
                 this.HUD.innerHTML = "";
-                this.HUD.style.top = '97%';//200 + 'px';
+                this.HUD.style.top = '70%';//200 + 'px';
                 this.overlay.innerHTML = "Throttle, Brake, Steering: Arrow Keys, Clutch: V, Gears 1-6: Q-A-W-S-E-D, Reverse Gear: R";
                 this.overlay.style.top = '0%';//200 + 'px';
                 this.HUD.style.left = 20 + 'px';
@@ -148,7 +151,6 @@
                                 components[i].group.position.x, components[i].group.position.y, components[i].group.position.z, components[i].group.rotation.order]];
                     Utils.Utils.mergeGroupChildren( geometries_array, components[i].group, arr );
                 }
-                console.log(geometries_array);
                 this.sceneGeometry = mergeBufferGeometries(geometries_array)
                 this.sceneGeometry.computeBoundingSphere();
 
@@ -256,24 +258,104 @@
                 var planeGeo = new Three.PlaneGeometry( 1000 * this.totalLength, 1000 * this.totalLength );
                 var plane = new Three.Mesh( planeGeo, this.meshMaterial.ground );
                 plane.rotation.x = - Math.PI / 2;
-                plane.position.y = - 0.0001 * this.totalLength;
+                plane.position.y = - 0.001 * this.totalLength;
                 this.scene.add(plane);
                 var buildingsGeos = [];
+                var roadsGeos = [];
+                var linesGeos = [];
+                var road_width = 7;
+                var line_width = 0.1;
+                var roadCurve, lineInsideCurve, lineOutsideCurve;
+                [roadCurve, lineInsideCurve, lineOutsideCurve] = Construction.Construction.road(0, road_width, 1, Math.PI / 2, line_width);
+
                 for ( i = 0; i < 2000 ; i++ ) {
+                    let width = Math.random() * 20 + 10;
                     let height = Math.random() * 20 + 10;
-                    buildingsGeos.push(new Three.BoxGeometry(
-                        Math.random() * 20 + 10,
-                        height,
-                        Math.random() * 20 + 10
-                    ).translate(
+                    let depth = Math.random() * 20 + 10;
+
+                    let translation = new THREE.Vector3(
                         (Math.random() * 1000 - 500) * this.totalLength,
                         height / 2,
-                        (Math.random() * 1000 - 500) * this.totalLength )
+                        (Math.random() * 1000 - 500) * this.totalLength
                     );
+                    let width_road = new Three.PlaneGeometry(road_width, width).rotateX(- Math.PI / 2).rotateY(Math.PI / 2);
+                    let depth_road = new Three.PlaneGeometry(road_width, depth).rotateX(- Math.PI / 2);
+                    let width_road_line = new Three.PlaneGeometry(line_width, width).rotateX(- Math.PI / 2).rotateY(Math.PI / 2);
+                    let depth_road_line = new Three.PlaneGeometry(line_width, depth).rotateX(- Math.PI / 2);
+                    let building_road = mergeBufferGeometries([
+                        roadCurve.clone().rotateY(Math.PI).translate(- (width) / 2, 0,  - (depth + road_width) / 2),
+                        width_road.clone().translate(0, 0,  - (depth + road_width) / 2),
+                        roadCurve.clone().rotateY(Math.PI / 2).translate(+ (width + road_width) / 2, 0,  - (depth) / 2),
+                        width_road.clone().translate(0, 0,  (depth + road_width) / 2),
+                        roadCurve.clone().translate(+ (width) / 2, 0,  + (depth + road_width) / 2),
+                        depth_road.clone().translate(- (width + road_width) / 2, 0, 0),
+                        roadCurve.clone().rotateY(- Math.PI / 2).translate(- (width + road_width) / 2, 0,  + (depth) / 2),
+                        depth_road.clone().translate((width + road_width) / 2, 0, 0),
+                    ]);
+                    let road_lines = mergeBufferGeometries([
+                        lineInsideCurve.clone().rotateY(Math.PI).translate(- (width) / 2, 0,  - (depth + road_width) / 2),
+                        lineOutsideCurve.clone().rotateY(Math.PI).translate(- (width) / 2, 0,  - (depth + road_width) / 2),
+                        width_road_line.clone().translate(0, 0,  - (depth + road_width) / 2 + 1.5 * line_width),
+                        width_road_line.clone().translate(0, 0,  - (depth + road_width) / 2 - 1.5 * line_width),
+                        lineInsideCurve.clone().rotateY(Math.PI / 2).translate(+ (width + road_width) / 2, 0,  - (depth) / 2),
+                        lineOutsideCurve.clone().rotateY(Math.PI / 2).translate(+ (width + road_width) / 2, 0,  - (depth) / 2),
+                        width_road_line.clone().translate(0, 0,  (depth + road_width) / 2 + 1.5 * line_width),
+                        width_road_line.clone().translate(0, 0,  (depth + road_width) / 2 - 1.5 * line_width),
+                        lineInsideCurve.clone().translate(+ (width) / 2, 0,  + (depth + road_width) / 2),
+                        lineOutsideCurve.clone().translate(+ (width) / 2, 0,  + (depth + road_width) / 2),
+                        depth_road_line.clone().translate(- (width + road_width) / 2 + 1.5 * line_width, 0, 0),
+                        depth_road_line.clone().translate(- (width + road_width) / 2 - 1.5 * line_width, 0, 0),
+                        lineInsideCurve.clone().rotateY(- Math.PI / 2).translate(- (width + road_width) / 2, 0,  + (depth) / 2),
+                        lineOutsideCurve.clone().rotateY(- Math.PI / 2).translate(- (width + road_width) / 2, 0,  + (depth) / 2),
+                        depth_road_line.clone().translate((width + road_width) / 2 + 1.5 * line_width, 0, 0),
+                        depth_road_line.clone().translate((width + road_width) / 2 - 1.5 * line_width, 0, 0),
+                    ]);
+
+                    roadsGeos.push(
+                        building_road
+                    .translate(
+                        translation.x,
+                        0.01 * line_width,
+                        translation.z
+                    ));
+
+                    linesGeos.push(
+                        road_lines
+                    .translate(
+                        translation.x,
+                        0.05 * line_width,
+                        translation.z
+                    ));
+
+                    buildingsGeos.push(new Three.BoxGeometry(
+                        width,
+                        height,
+                        depth
+                    ).translate(
+                        translation.x,
+                        translation.y,
+                        translation.z
+                    ));
                 }
+                // var roadExample = Construction.Construction.road(5, road_width, 1, Math.PI * 3 / 4, line_width);
+                // console.log(roadExample[0].clone());
+                // roadsGeos.push(roadExample[0]);
+                // linesGeos.push(roadExample[1]);
+                // linesGeos.push(roadExample[2]);
+
+
                 var buildingsGeo = mergeBufferGeometries(buildingsGeos);
+                var roadsGeo = mergeBufferGeometries(roadsGeos);
+                var linesGeo = mergeBufferGeometries(linesGeos);
+
                 var buildingsMesh = new Three.Mesh( buildingsGeo, this.meshMaterial.building );
+                var roadsMesh = new Three.Mesh( roadsGeo, this.meshMaterial.road );
+                var linesMesh = new Three.Mesh( linesGeo, this.meshMaterial.line );
+
                 this.scene.add(buildingsMesh);
+                this.scene.add(roadsMesh);
+                this.scene.add(linesMesh);
+
 
                 // Add components
                 for (var i = 0; i < components.length;i++)
@@ -310,7 +392,7 @@
                 if (e.keyCode === 37 /* left */){
                     this.left = false;
                 }
-                    if (e.keyCode === 86 /* left */){
+                    if (e.keyCode === 86 /* v */){
                     this.clutch = false;
                 }
 
@@ -407,15 +489,16 @@
                 this.car.transmission.clutch += !this.clutch ? (this.car.transmission.clutch < 1 ? 0.05 * this.timestep : 0 ) : (this.car.transmission.clutch > 0 ? - 0.2 * this.timestep * this.car.transmission.clutch : 0 );
                 if (this.car.transmission.clutch < 0) this.car.transmission.clutch = 0;
                 this.HUD.innerHTML = 'Engine RPM : ' + String( (this.car.engine._rot * 60).toFixed() ) +
-                    ' , Speed : ' + String( ( this.car.speed * 3.6 ).toFixed(1) ) +
-                    ' , Throttle : ' + String( this.throttle.toFixed(1) ) +
-                    ' , Gear : ' + String( this.car.transmission.gear === false ? 'N' : (this.car.transmission.gear !== 0 ? this.car.transmission.gear : 'R') ) +
-                    ' , Accelaration : ' + String( this.car.acceleration.toFixed(1) ) +
-                    ' , Brake : ' + String( this.brake.toFixed(1) ) +
-                    ' , Steering : ' +	String( (this.car.ackermanSteering.steeringWheelPosition).toFixed(1) ) +
-                    ' , Clutch : ' + String( this.car.transmission.clutch.toFixed(1) ) +
-                    ' , Power : ' + String( this.car.engine._currentPower.toFixed() ) +
-                    ' , Torque : ' + String( this.car.engine._currentTorque.toFixed() );
+                    ' <br>Speed : ' + String( ( this.car.speed * 3.6 ).toFixed(1) ) +
+                    ' <br>Throttle : ' + String( this.throttle.toFixed(1) ) +
+                    ' <br>Gear : ' + String( this.car.transmission.gear === false ? 'N' : (this.car.transmission.gear !== 0 ? this.car.transmission.gear : 'R') ) +
+                    ' <br>Accelaration : ' + String( this.car.acceleration.toFixed(1) ) +
+                    ' <br>Brake : ' + String( this.brake.toFixed(1) ) +
+                    ' <br>Steering : ' +	String( (this.car.ackermanSteering.steeringWheelPosition).toFixed(1) ) +
+                    ' <br>Clutch : ' + String( this.car.transmission.clutch.toFixed(1) ) +
+                    ' <br>Power : ' + String( this.car.engine._currentPower.toFixed() ) +
+                    ' <br>Torque : ' + String( this.car.engine._currentTorque.toFixed() ) +
+                    ' <br>Ackermam Steering Point : ' + String( Number.isFinite(this.car.ackermanSteering.ackermanPoint)?this.car.ackermanSteering.ackermanPoint.toFixed(2):this.car.ackermanSteering.ackermanPoint );
                 // sound.setVolume(Math.min(Math.abs(speed.length()) / 20, 0.5));
                 // console.log(this.car.speed.length());
 
@@ -428,7 +511,7 @@
                 this.car.applyTransformation( this.timestep / 5 );
                 this.scene.updateMatrixWorld();
                 // console.log(this.car.centerTransformation);
-                this.controls.target.copy(this.car.center);
+                this.controls.target.copy(this.car.center.clone());
                 this.controls.update();
                 this.renderer.render( this.scene, this.camera );
                 this.timer2 = performance.now();

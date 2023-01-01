@@ -63,7 +63,12 @@ class Car{
       this.maxSpeed = this.engine._rev_limit * this.transmission.gearbox[this.transmission.gearbox.length - 1] * this._wheel.R;
       this.group = new THREE.Group();
       this.group.add(this.wheelGroup);
-      this.carMesh = new THREE.Mesh( carGeo, new THREE.MeshPhysicalMaterial(/*{wireframe : true}*/) );//new THREE.BoxGeometry( 30, 4, 18).translate( 0, 3, 0 ), new THREE.MeshPhysicalMaterial());
+      this.carMesh = new THREE.Mesh( carGeo, new THREE.MeshPhysicalMaterial({
+        color: '#FF0000',
+        roughness : 0,
+        clearcoat : 1,
+        reflectivity : 0.5,
+        }));//new THREE.BoxGeometry( 30, 4, 18).translate( 0, 3, 0 ), new THREE.MeshPhysicalMaterial());
       this.carMesh.matrixAutoUpdate = false;
       this.carMesh.matrix.copy( this.centerTransformation );
       this.group.add(this.carMesh);
@@ -131,7 +136,7 @@ class Car{
         this.centerTransformation.decompose ( [], quaternion, [] );
         this.frontVector.copy((new THREE.Vector3( 1, 0, 0 )).applyQuaternion(quaternion));
       } else {
-        this.centerTransformation.setPosition( (this.frontVector.clone()).multiplyScalar( this.speed * timestep ).add(this.center) )
+        this.centerTransformation.setPosition( (this.frontVector.clone()).multiplyScalar( this.speed * timestep ).add(this.center.clone()) )
         transformation.setPosition( (this.frontVector.clone()).multiplyScalar( this.speed * timestep ) );
         for ( var i = 0; i < this.wheelGroup.children.length; i++ )
           this.wheelGroup.children[i].matrix.copy( (this.centerTransformation.clone()).multiply(this.wheelMatrices[i][1]) );
@@ -159,18 +164,18 @@ class Car{
       for ( var i = 1; i < frontToRearPoints.length; i++ )
         extrudeShape.lineTo( frontToRearPoints[i][0], frontToRearPoints[i][1] );
       for ( var i = 0; i < wheelsCentersPositions.length; i++ )
-        extrudeShape.absarc( wheelsCentersPositions[i][0], 0, radius + 2 * bevelThickness, Math.PI, 0, true );
+        extrudeShape.absarc( wheelsCentersPositions[i][0], 0, radius + 1.4 * bevelThickness, Math.PI, 0, true );
 			var extrudeSettings = {
-				steps: 1,
-				depth: width - 2 * bevelThickness,
+				steps: 32,
+				depth: width - 24 * bevelThickness,
 				bevelEnabled: true,
-				bevelThickness: bevelThickness,
+				bevelThickness: 12 * bevelThickness,
 				bevelSize: bevelThickness,
 				bevelOffset: bevelThickness,
-				bevelSegments: 10
+				bevelSegments: 32
 			};
       var car_geo = new THREE.ExtrudeGeometry( extrudeShape, extrudeSettings );
-      return (car_geo.translate( 0, radius, - width / 2 + bevelThickness));
+      return (car_geo.translate( 0, radius, - width / 2 + 12 * bevelThickness));
     }
 }
 export default {Car};
