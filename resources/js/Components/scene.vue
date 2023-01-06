@@ -496,7 +496,13 @@
                 // this.frameBuffer.shift();
                 this.throttle += ( this.up ? ( this.throttle < 2 ? 0.05 * this.timestep : 0 ) : ( this.throttle > 1 ? - 0.1 * this.timestep * (this.throttle - 1) : 0 ) );
                 this.brake += ( this.down ? ( this.brake < 1 ? 0.2 * this.timestep : 0 ) : ( this.brake > 0 ? - 0.4 * this.timestep * this.brake : 0 ) );
-                this.steerSpeed = Math.min( 0.05 * this.car.maxSpeed / Math.abs(this.car.speed), 1) * ( (this.left ? 0.6 * this.timestep : 0) - (this.right ? 0.6 * this.timestep : 0) ) - (!(this.left || this.right) ?  this.timestep * this.car.ackermanSteering.steeringWheelPosition : 0);
+                if ((this.right && this.car.ackermanSteering.steeringWheelPosition > 0) || (this.left && this.car.ackermanSteering.steeringWheelPosition < 0)) {
+                    // When changing steering side make the steer crispier
+                    this.car.ackermanSteering.steeringWheelPosition *= 0.1;
+                }
+                this.steerSpeed =
+                    Math.min( 0.02 * this.car.maxSpeed / Math.abs(this.car.speed), 1)
+                    * ( (this.left ? 0.6 * this.timestep : 0) - (this.right ? 0.6 * this.timestep : 0) ) - (!(this.left || this.right) ?  this.timestep * this.car.ackermanSteering.steeringWheelPosition : 0);
                 // console.log(this.steerSpeed, this.car.maxSpeed);
                 this.car.transmission.clutch += !this.clutch ? (this.car.transmission.clutch < 1 ? 0.05 * this.timestep : 0 ) : (this.car.transmission.clutch > 0 ? - 0.2 * this.timestep * this.car.transmission.clutch : 0 );
                 if (this.car.transmission.clutch < 0) this.car.transmission.clutch = 0;

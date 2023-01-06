@@ -154,7 +154,7 @@ class Car{
       // if ( this.frontVector.cross( this.upVector ) ) deltaTheta *= -1;
       // console.log( this.camera.theta, deltaTheta );
       let previous = this.camera.cameraOffset.clone();
-      this.camera.cameraOffset.applyAxisAngle( this.upVector, - 0.5 * timestep * Math.abs(this.speed) / this.maxSpeed * deltaTheta );
+      this.camera.cameraOffset.applyAxisAngle( this.upVector, - 1.8 * timestep * Math.abs(this.speed) / this.maxSpeed * deltaTheta );
       this.camera.position.sub( previous.sub(this.camera.cameraOffset) );
     }
 
