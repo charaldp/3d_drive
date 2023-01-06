@@ -265,10 +265,13 @@
                 var linesGeos = [];
                 var road_width = 7;
                 var line_width = 0.1;
-                var roadCurve, lineInsideCurve, lineOutsideCurve;
-                [roadCurve, lineInsideCurve, lineOutsideCurve] = Construction.Construction.road(0, road_width, 1, Math.PI / 2, line_width);
+                var roadCurve, lineCurves, roadObject;
 
-                for ( i = 0; i < 2000 ; i++ ) {
+                roadObject = Construction.Construction.road(0, road_width, 1, Math.PI / 2, line_width);
+                roadCurve = roadObject.roadCurve;
+                lineCurves = roadObject.lineCurves;
+
+                for ( i = 0; i < 700 ; i++ ) {
                     let width = Math.random() * 20 + 10;
                     let height = Math.random() * 20 + 10;
                     let depth = Math.random() * 20 + 10;
@@ -293,20 +296,16 @@
                         depth_road.clone().translate((width + road_width) / 2, 0, 0),
                     ]);
                     let road_lines = mergeBufferGeometries([
-                        lineInsideCurve.clone().rotateY(Math.PI).translate(- (width) / 2, 0,  - (depth + road_width) / 2),
-                        lineOutsideCurve.clone().rotateY(Math.PI).translate(- (width) / 2, 0,  - (depth + road_width) / 2),
+                        lineCurves.clone().rotateY(Math.PI).translate(- (width) / 2, 0,  - (depth + road_width) / 2),
                         width_road_line.clone().translate(0, 0,  - (depth + road_width) / 2 + 1.5 * line_width),
                         width_road_line.clone().translate(0, 0,  - (depth + road_width) / 2 - 1.5 * line_width),
-                        lineInsideCurve.clone().rotateY(Math.PI / 2).translate(+ (width + road_width) / 2, 0,  - (depth) / 2),
-                        lineOutsideCurve.clone().rotateY(Math.PI / 2).translate(+ (width + road_width) / 2, 0,  - (depth) / 2),
+                        lineCurves.clone().rotateY(Math.PI / 2).translate(+ (width + road_width) / 2, 0,  - (depth) / 2),
                         width_road_line.clone().translate(0, 0,  (depth + road_width) / 2 + 1.5 * line_width),
                         width_road_line.clone().translate(0, 0,  (depth + road_width) / 2 - 1.5 * line_width),
-                        lineInsideCurve.clone().translate(+ (width) / 2, 0,  + (depth + road_width) / 2),
-                        lineOutsideCurve.clone().translate(+ (width) / 2, 0,  + (depth + road_width) / 2),
+                        lineCurves.clone().translate(+ (width) / 2, 0,  + (depth + road_width) / 2),
                         depth_road_line.clone().translate(- (width + road_width) / 2 + 1.5 * line_width, 0, 0),
                         depth_road_line.clone().translate(- (width + road_width) / 2 - 1.5 * line_width, 0, 0),
-                        lineInsideCurve.clone().rotateY(- Math.PI / 2).translate(- (width + road_width) / 2, 0,  + (depth) / 2),
-                        lineOutsideCurve.clone().rotateY(- Math.PI / 2).translate(- (width + road_width) / 2, 0,  + (depth) / 2),
+                        lineCurves.clone().rotateY(- Math.PI / 2).translate(- (width + road_width) / 2, 0,  + (depth) / 2),
                         depth_road_line.clone().translate((width + road_width) / 2 + 1.5 * line_width, 0, 0),
                         depth_road_line.clone().translate((width + road_width) / 2 - 1.5 * line_width, 0, 0),
                     ]);
@@ -315,7 +314,7 @@
                         building_road
                     .translate(
                         translation.x,
-                        0.01 * line_width,
+                        0.05 * line_width,
                         translation.z
                     ));
 
@@ -323,7 +322,7 @@
                         road_lines
                     .translate(
                         translation.x,
-                        0.05 * line_width,
+                        0.1 * line_width,
                         translation.z
                     ));
 
@@ -337,12 +336,25 @@
                         translation.z
                     ));
                 }
-                // var roadExample = Construction.Construction.road(5, road_width, 1, Math.PI * 3 / 4, line_width);
-                // console.log(roadExample[0].clone());
-                // roadsGeos.push(roadExample[0]);
-                // linesGeos.push(roadExample[1]);
-                // linesGeos.push(roadExample[2]);
-
+                let transformationNext = new THREE.Matrix4();
+                let roadRadius, angle;
+                for ( i = 0; i < 2000 ; i++ ) {
+                    // let roadRadius = Math.random() * 50 + 10;
+                    // let angle = Math.random() * 0.6 * Math.PI + 0.1 * Math.PI;
+                    if (Math.random() < 0.7) {
+                        roadRadius = 20000;
+                        angle = Math.random() * 0.006 * Math.PI + 0.001 * Math.PI;
+                    } else {
+                        roadRadius = Math.random() * 10;
+                        angle = Math.PI / 2;
+                    }
+                    let sign = Math.sign(Math.random() - 0.5);
+                    roadObject = Construction.Construction.road(roadRadius, road_width, sign, angle, line_width);
+                    roadsGeos.push(roadObject.roadCurve.applyMatrix4(transformationNext));
+                    linesGeos.push(roadObject.lineCurves.applyMatrix4(transformationNext));
+                    // transformationNext.(roadObject.translationNext.clone());
+                    transformationNext.multiply(roadObject.transformationNext.clone());
+                }
 
                 var buildingsGeo = mergeBufferGeometries(buildingsGeos);
                 var roadsGeo = mergeBufferGeometries(roadsGeos);
