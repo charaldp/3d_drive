@@ -103,7 +103,7 @@
                         building: new Three.MeshLambertMaterial( { color: 0xcccccc, opacity: 0.95, transparent: true } ),
                         road: new Three.MeshBasicMaterial( { color: 0x333333} ),
                         line: new Three.MeshBasicMaterial( { color: 0xffff1a} ),
-                        ground: new Three.MeshBasicMaterial( { color: 0x77aa22, side: Three.FrontSide, opacity: 0.65, transparent: true } )
+                        ground: new Three.MeshBasicMaterial( { color: 0x44aa19, side: Three.FrontSide, opacity: 0.85, transparent: true } )
                     };
                     var wheel = new Wheel.Wheel( vehicle.components.wheel[0].DO, vehicle.components.wheel[0].DI, vehicle.components.wheel[0].t, vehicle.components.wheel[0].tireType, vehicle.components.wheel[0].tireDims, vehicle.components.wheel[0].rimType, vehicle.components.wheel[0].rimDims,
                         vehicle.components.wheel[0].pressure, vehicle.components.wheel[0].frictionOptions, this.meshMaterial );
@@ -287,34 +287,34 @@
                     let depth_road_line = new Three.PlaneGeometry(line_width, depth).rotateX(- Math.PI / 2);
                     let building_road = mergeBufferGeometries([
                         roadCurve.clone().rotateY(Math.PI).translate(- (width) / 2, 0,  - (depth + road_width) / 2),
-                        width_road.clone().translate(0, 0,  - (depth + road_width) / 2),
+                        width_road.clone().translate(0, 0.05 * line_width,  - (depth + road_width) / 2),
                         roadCurve.clone().rotateY(Math.PI / 2).translate(+ (width + road_width) / 2, 0,  - (depth) / 2),
-                        width_road.clone().translate(0, 0,  (depth + road_width) / 2),
+                        width_road.clone().translate(0, 0.05 * line_width,  (depth + road_width) / 2),
                         roadCurve.clone().translate(+ (width) / 2, 0,  + (depth + road_width) / 2),
-                        depth_road.clone().translate(- (width + road_width) / 2, 0, 0),
+                        depth_road.clone().translate(- (width + road_width) / 2, 0.05 * line_width, 0),
                         roadCurve.clone().rotateY(- Math.PI / 2).translate(- (width + road_width) / 2, 0,  + (depth) / 2),
-                        depth_road.clone().translate((width + road_width) / 2, 0, 0),
+                        depth_road.clone().translate((width + road_width) / 2, 0.05 * line_width, 0),
                     ]);
                     let road_lines = mergeBufferGeometries([
                         lineCurves.clone().rotateY(Math.PI).translate(- (width) / 2, 0,  - (depth + road_width) / 2),
-                        width_road_line.clone().translate(0, 0,  - (depth + road_width) / 2 + 1.5 * line_width),
-                        width_road_line.clone().translate(0, 0,  - (depth + road_width) / 2 - 1.5 * line_width),
+                        width_road_line.clone().translate(0, 0.1 * line_width,  - (depth + road_width) / 2 + 1.5 * line_width),
+                        width_road_line.clone().translate(0, 0.1 * line_width,  - (depth + road_width) / 2 - 1.5 * line_width),
                         lineCurves.clone().rotateY(Math.PI / 2).translate(+ (width + road_width) / 2, 0,  - (depth) / 2),
-                        width_road_line.clone().translate(0, 0,  (depth + road_width) / 2 + 1.5 * line_width),
-                        width_road_line.clone().translate(0, 0,  (depth + road_width) / 2 - 1.5 * line_width),
+                        width_road_line.clone().translate(0, 0.1 * line_width,  (depth + road_width) / 2 + 1.5 * line_width),
+                        width_road_line.clone().translate(0, 0.1 * line_width,  (depth + road_width) / 2 - 1.5 * line_width),
                         lineCurves.clone().translate(+ (width) / 2, 0,  + (depth + road_width) / 2),
-                        depth_road_line.clone().translate(- (width + road_width) / 2 + 1.5 * line_width, 0, 0),
-                        depth_road_line.clone().translate(- (width + road_width) / 2 - 1.5 * line_width, 0, 0),
+                        depth_road_line.clone().translate(- (width + road_width) / 2 + 1.5 * line_width, 0.1 * line_width, 0),
+                        depth_road_line.clone().translate(- (width + road_width) / 2 - 1.5 * line_width, 0.1 * line_width, 0),
                         lineCurves.clone().rotateY(- Math.PI / 2).translate(- (width + road_width) / 2, 0,  + (depth) / 2),
-                        depth_road_line.clone().translate((width + road_width) / 2 + 1.5 * line_width, 0, 0),
-                        depth_road_line.clone().translate((width + road_width) / 2 - 1.5 * line_width, 0, 0),
+                        depth_road_line.clone().translate((width + road_width) / 2 + 1.5 * line_width, 0.1 * line_width, 0),
+                        depth_road_line.clone().translate((width + road_width) / 2 - 1.5 * line_width, 0.1 * line_width, 0),
                     ]);
 
                     roadsGeos.push(
                         building_road
                     .translate(
                         translation.x,
-                        0.05 * line_width,
+                        0,
                         translation.z
                     ));
 
@@ -322,7 +322,7 @@
                         road_lines
                     .translate(
                         translation.x,
-                        0.1 * line_width,
+                        0,
                         translation.z
                     ));
 
@@ -498,7 +498,7 @@
                 this.brake += ( this.down ? ( this.brake < 1 ? 0.2 * this.timestep : 0 ) : ( this.brake > 0 ? - 0.4 * this.timestep * this.brake : 0 ) );
                 if ((this.right && this.car.ackermanSteering.steeringWheelPosition > 0) || (this.left && this.car.ackermanSteering.steeringWheelPosition < 0)) {
                     // When changing steering side make the steer crispier
-                    this.car.ackermanSteering.steeringWheelPosition *= 0.1;
+                    this.car.ackermanSteering.steeringWheelPosition *= 0.2;
                 }
                 this.steerSpeed =
                     Math.min( 0.02 * this.car.maxSpeed / Math.abs(this.car.speed), 1)

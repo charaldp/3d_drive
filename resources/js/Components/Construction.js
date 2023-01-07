@@ -3,7 +3,7 @@ import {mergeBufferGeometries} from 'three/examples/jsm/utils/BufferGeometryUtil
 
 class Construction
 {
-    static road(rotation_point, road_width, sign, angle, line_width, road_material, line_material)
+    static road(rotation_point, road_width, sign, angle, line_width)
     {
         // rotation_point = 0 means that the road's curvature will be made around a point right at the side of the road (e.g. for a direct turn)
         let numberOfPoints = Math.ceil(128 * angle / Math.PI);
@@ -17,7 +17,7 @@ class Construction
         let lineCurves = mergeBufferGeometries([
             lineInLathe,
             lineOutLathe,
-        ])
+        ]);
         let transformationNext = new THREE.Matrix4();
         transformationNext.setPosition( new THREE.Vector3(0, 0, - sign * radiusToCenter) );
         transformationNext.multiply((new THREE.Matrix4()).makeRotationY( sign * angle ));
@@ -31,6 +31,25 @@ class Construction
         return {
             roadCurve: roadLathe,
             lineCurves: lineCurves,
+            transformationNext: transformationNext,
+        };
+    }
+
+    static roadLine(length, road_width, line_width)
+    {
+        // rotation_point = 0 means that the road's curvature will be made around a point right at the side of the road (e.g. for a direct turn)
+        let road = new Three.PlaneGeometry(road_width, length).rotateX(- Math.PI / 2).rotateY(Math.PI / 2);
+        let roadLine = new Three.PlaneGeometry(line_width, length).rotateX(- Math.PI / 2).rotateY(Math.PI / 2);
+        let roadLines = mergeBufferGeometries([
+            roadLine.clone().translate(0, 0.1 * line_width,  - (depth + road_width) / 2 + 1.5 * line_width),
+            roadLine.clone().translate(0, 0.1 * line_width,  - (depth + road_width) / 2 - 1.5 * line_width),
+        ]);
+        roadLathe.translate(0, 0.1 * line_width, 0);
+        let transformationNext = new THREE.Matrix4();
+        transformationNext.setPosition( new THREE.Vector3(length, 0, 0) );
+        return {
+            road: road,
+            roadLines: roadLines,
             transformationNext: transformationNext,
         };
     }

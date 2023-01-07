@@ -26,6 +26,7 @@ class Car{
       this.upVector = new THREE.Vector3( 0, 1, 0 );
       this.frontVector = new THREE.Vector3( 1, 0, 0 ).applyAxisAngle( this.upVector, spawnPosition.rotation * Math.PI / 180 );
       this.camera = camera;
+      this.cameraTrackOnMove = false;
       this.wheelMatrices = [];
       for ( var i = 0; i < this.wheelGroup.children.length; i++ ) {
         this.wheelMatrices.push([new THREE.Matrix4(), new THREE.Matrix4()]);
@@ -103,9 +104,9 @@ class Car{
       if ( Math.abs(synchronizationCoeff - 1) > 0.01 || this.transmission.clutchFrictionCoeff < Phys.Phys.clutchSigmoidFrictionCoeff( 1, 15, 1 ) / 1.5 ) {
         this.engine.updateEngineState( throttle, timestep, false );
         // console.log(this.transmission.clutchFrictionCoeff);
-        this.engine._rot += (targetRot - this.engine._rot) * (0.98, timestep * this.transmission.clutchFrictionCoeff * this.engine._load_inertia / ( this.engine._load_inertia + this.engine._shaft_inertia ) );
+        this.engine._rot += (targetRot - this.engine._rot) * (0.98 *  timestep * this.transmission.clutchFrictionCoeff * this.engine._load_inertia / ( this.engine._load_inertia + this.engine._shaft_inertia ) );
         // console.log((0.98, timestep * this.transmission.clutchFrictionCoeff * this.engine._load_inertia / ( this.engine._load_inertia + this.engine._shaft_inertia )));
-        let posterior_transmission_rot = transmission_rot + (targetRot - transmission_rot) * ( 0.98, timestep * this.transmission.clutchFrictionCoeff * this.engine._shaft_inertia / ( this.engine._load_inertia + this.engine._shaft_inertia ) );
+        let posterior_transmission_rot = transmission_rot + (targetRot - transmission_rot) * ( 0.98 * timestep * this.transmission.clutchFrictionCoeff * this.engine._shaft_inertia / ( this.engine._load_inertia + this.engine._shaft_inertia ) );
         this._differential_rot = this.transmission.gear !== false ? posterior_transmission_rot * this.transmission.gearbox[this.transmission.gear] : this.speed / this._wheel.R;
       } else {
         this.engine.updateEngineState( throttle, timestep, true );
@@ -141,7 +142,7 @@ class Car{
         for ( var i = 0; i < this.wheelGroup.children.length; i++ )
           this.wheelGroup.children[i].matrix.copy( (this.centerTransformation.clone()).multiply(this.wheelMatrices[i][1]) );
       }
-      this.carMesh.matrix.copy(this.centerTransformation);
+      this.carMesh.matrix.copy(this.centerTransformation.clone());
       this.center.add( new THREE.Vector3 (transformation.elements[12], transformation.elements[13], transformation.elements[14] ) )
       // set( this.centerTransformation.elements[12], this.centerTransformation.elements[13], this.centerTransformation.elements[14] );
       this.camera.position.add( new THREE.Vector3( transformation.elements[12], transformation.elements[13], transformation.elements[14] ) );
@@ -154,8 +155,10 @@ class Car{
       // if ( this.frontVector.cross( this.upVector ) ) deltaTheta *= -1;
       // console.log( this.camera.theta, deltaTheta );
       let previous = this.camera.cameraOffset.clone();
-      this.camera.cameraOffset.applyAxisAngle( this.upVector, - 1.8 * timestep * Math.abs(this.speed) / this.maxSpeed * deltaTheta );
-      this.camera.position.sub( previous.sub(this.camera.cameraOffset) );
+      if (this.cameraTrackOnMove) {
+          this.camera.cameraOffset.applyAxisAngle( this.upVector, - 1.8 * timestep * Math.abs(this.speed) / this.maxSpeed * deltaTheta );
+          this.camera.position.sub( previous.sub(this.camera.cameraOffset) );
+      }
     }
 
     static makeCarGeo( frontToRearPoints, wheelsCentersPositions, radius, width, bevelThickness) {
