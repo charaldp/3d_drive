@@ -29,22 +29,22 @@ class Construction
         lineCurves.translate(0, 0.1 * line_width, - sign * radiusToCenter);
         transformationNext.multiply((new THREE.Matrix4()).setPosition( new THREE.Vector3(0, 0, sign * radiusToCenter)));
         return {
-            roadCurve: roadLathe,
-            lineCurves: lineCurves,
+            road: roadLathe,
+            roadLines: lineCurves,
             transformationNext: transformationNext,
         };
     }
 
     static roadLine(length, road_width, line_width)
     {
+        let numberOfPoints = Math.ceil(5 * length / road_width);
         // rotation_point = 0 means that the road's curvature will be made around a point right at the side of the road (e.g. for a direct turn)
-        let road = new Three.PlaneGeometry(road_width, length).rotateX(- Math.PI / 2).rotateY(Math.PI / 2);
-        let roadLine = new Three.PlaneGeometry(line_width, length).rotateX(- Math.PI / 2).rotateY(Math.PI / 2);
+        let road = new THREE.PlaneGeometry(road_width, length, 5, numberOfPoints).rotateX(- Math.PI / 2).rotateY(Math.PI / 2).translate(length / 2, 0.05 * line_width, 0);
+        let roadLine = new THREE.PlaneGeometry(line_width, length, 1, numberOfPoints).rotateX(- Math.PI / 2).rotateY(Math.PI / 2).translate(length / 2, 0.1 * line_width, 0);
         let roadLines = mergeBufferGeometries([
-            roadLine.clone().translate(0, 0.1 * line_width,  - (depth + road_width) / 2 + 1.5 * line_width),
-            roadLine.clone().translate(0, 0.1 * line_width,  - (depth + road_width) / 2 - 1.5 * line_width),
+            roadLine.clone().translate(0, 0, + 1.5 * line_width),
+            roadLine.clone().translate(0, 0, - 1.5 * line_width),
         ]);
-        roadLathe.translate(0, 0.1 * line_width, 0);
         let transformationNext = new THREE.Matrix4();
         transformationNext.setPosition( new THREE.Vector3(length, 0, 0) );
         return {

@@ -263,13 +263,13 @@
                 var buildingsGeos = [];
                 var roadsGeos = [];
                 var linesGeos = [];
-                var road_width = 7;
+                var road_width = 15;
                 var line_width = 0.1;
                 var roadCurve, lineCurves, roadObject;
 
                 roadObject = Construction.Construction.road(0, road_width, 1, Math.PI / 2, line_width);
-                roadCurve = roadObject.roadCurve;
-                lineCurves = roadObject.lineCurves;
+                roadCurve = roadObject.road;
+                lineCurves = roadObject.roadLines;
 
                 for ( i = 0; i < 700 ; i++ ) {
                     let width = Math.random() * 20 + 10;
@@ -337,21 +337,27 @@
                     ));
                 }
                 let transformationNext = new THREE.Matrix4();
-                let roadRadius, angle;
+                let roadRadius, angle, length, sign;
                 for ( i = 0; i < 2000 ; i++ ) {
                     // let roadRadius = Math.random() * 50 + 10;
                     // let angle = Math.random() * 0.6 * Math.PI + 0.1 * Math.PI;
-                    if (Math.random() < 0.7) {
-                        roadRadius = 20000;
-                        angle = Math.random() * 0.006 * Math.PI + 0.001 * Math.PI;
-                    } else {
-                        roadRadius = Math.random() * 10;
+                    let rand1 = Math.random();
+                    if (rand1 < 0.7) {
+                        length = 30 + Math.random() * 200;
+                        roadObject = Construction.Construction.roadLine(length, road_width, line_width);
+                    } else if (rand1 < 0.9) {
+                        roadRadius = Math.random() * 40;
                         angle = Math.PI / 2;
+                        sign = Math.sign(Math.random() - 0.5);
+                        roadObject = Construction.Construction.road(roadRadius, road_width, sign, angle, line_width);
+                    } else {
+                        roadRadius = Math.random() * 140;
+                        angle = Math.random() * 3 * Math.PI / 2;
+                        sign = Math.sign(Math.random() - 0.5);
+                        roadObject = Construction.Construction.road(roadRadius, road_width, sign, angle, line_width);
                     }
-                    let sign = Math.sign(Math.random() - 0.5);
-                    roadObject = Construction.Construction.road(roadRadius, road_width, sign, angle, line_width);
-                    roadsGeos.push(roadObject.roadCurve.applyMatrix4(transformationNext));
-                    linesGeos.push(roadObject.lineCurves.applyMatrix4(transformationNext));
+                    roadsGeos.push(roadObject.road.applyMatrix4(transformationNext));
+                    linesGeos.push(roadObject.roadLines.applyMatrix4(transformationNext));
                     // transformationNext.(roadObject.translationNext.clone());
                     transformationNext.multiply(roadObject.transformationNext.clone());
                 }
@@ -498,7 +504,7 @@
                 this.brake += ( this.down ? ( this.brake < 1 ? 0.2 * this.timestep : 0 ) : ( this.brake > 0 ? - 0.4 * this.timestep * this.brake : 0 ) );
                 if ((this.right && this.car.ackermanSteering.steeringWheelPosition > 0) || (this.left && this.car.ackermanSteering.steeringWheelPosition < 0)) {
                     // When changing steering side make the steer crispier
-                    this.car.ackermanSteering.steeringWheelPosition *= 0.2;
+                    this.car.ackermanSteering.steeringWheelPosition *= 0.3;
                 }
                 this.steerSpeed =
                     Math.min( 0.02 * this.car.maxSpeed / Math.abs(this.car.speed), 1)
@@ -506,7 +512,8 @@
                 // console.log(this.steerSpeed, this.car.maxSpeed);
                 this.car.transmission.clutch += !this.clutch ? (this.car.transmission.clutch < 1 ? 0.05 * this.timestep : 0 ) : (this.car.transmission.clutch > 0 ? - 0.2 * this.timestep * this.car.transmission.clutch : 0 );
                 if (this.car.transmission.clutch < 0) this.car.transmission.clutch = 0;
-                this.HUD.innerHTML = 'Engine RPM : ' + String( (this.car.engine._rot * 60).toFixed() ) +
+                this.HUD.innerHTML =
+                    'Engine RPM : ' + String( (this.car.engine._rot * 60).toFixed() ) +
                     ' <br>Speed : ' + String( ( this.car.speed * 3.6 ).toFixed(1) ) +
                     ' <br>Throttle : ' + String( this.throttle.toFixed(1) ) +
                     ' <br>Gear : ' + String( this.car.transmission.gear === false ? 'N' : (this.car.transmission.gear !== 0 ? this.car.transmission.gear : 'R') ) +
@@ -517,12 +524,15 @@
                     ' <br>Power : ' + String( this.car.engine._currentPower.toFixed() ) +
                     ' <br>Torque : ' + String( this.car.engine._currentTorque.toFixed() ) +
                     ' <br>Ackermam Steering Point : ' + String( Number.isFinite(this.car.ackermanSteering.ackermanPoint)?this.car.ackermanSteering.ackermanPoint.toFixed(2):this.car.ackermanSteering.ackermanPoint );
-                // sound.setVolume(Math.min(Math.abs(speed.length()) / 20, 0.5));
-                // console.log(this.car.speed.length());
+                    // console.log(this.car.speed.length());
 
                 this.car.updateLoad();
-				this.car.updateClutchConnection( this.throttle, this.brake, this.timestep / 5 );
-				// console.log(this.sound);
+                this.car.updateClutchConnection( this.throttle, this.brake, this.timestep / 5 );
+                // if (this.car.engine._rot * 60 < 1000) {
+                //     this.sound.setVolume(0.75 + (0.5 * (this.throttle - 1)));
+                //     this.car.engine._rot * 60
+                // }
+                this.sound.setVolume(Math.min((this.car.engine._rot * this.car.engine._rot) / (this.car.engine._idle_rot * this.car.engine._idle_rot), 1) * (0.75 + (0.25 * (this.throttle - 1))));
                 this.sound.setPlaybackRate( isNaN(this.car.engine._rot) ? 0 : this.car.engine._rot / this.car.engine._idle_rot * 0.9 );
                 this.car.updateWheelTransformation( this.timestep / 5, this.steerSpeed );
                 // this.car.moveCar( timestep / 1 );

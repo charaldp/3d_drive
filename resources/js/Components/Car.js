@@ -26,7 +26,7 @@ class Car{
       this.upVector = new THREE.Vector3( 0, 1, 0 );
       this.frontVector = new THREE.Vector3( 1, 0, 0 ).applyAxisAngle( this.upVector, spawnPosition.rotation * Math.PI / 180 );
       this.camera = camera;
-      this.cameraTrackOnMove = false;
+      this.cameraTrackOnMove = true;
       this.wheelMatrices = [];
       for ( var i = 0; i < this.wheelGroup.children.length; i++ ) {
         this.wheelMatrices.push([new THREE.Matrix4(), new THREE.Matrix4()]);
@@ -66,6 +66,7 @@ class Car{
       this.group.add(this.wheelGroup);
       this.carMesh = new THREE.Mesh( carGeo, new THREE.MeshPhysicalMaterial({
         color: '#FF0000',
+        // map: new THREE.TextureLoader().load(image),
         roughness : 0,
         clearcoat : 1,
         reflectivity : 0.5,
