@@ -5,14 +5,8 @@
 	import * as Three from 'three';
 	// const THREE = Three;
     // import Sky from 'three';
-    import '../prev/three/csg.js';
-    import '../prev/three/ThreeCSG.js';
-    import Utils from '../prev/Utils.js';
+    import Utils from './Utils.js';
     // import ammo from '../prev/ammo.js';
-    import '../prev/jquery-1.9.1.js';
-    import '../prev/jquery-migrate-1.2.1.min.js';
-    import '../prev/three/three.min.js';
-	import '../prev/three/dat.gui.min.js';
 	// import 'three/examples/js/controls/OrbitControls';
     // import '../prev/three/controls/OrbitControls.js';
     // import '../prev/three/controls/FlyControls.js';
@@ -263,7 +257,7 @@
                 var buildingsGeos = [];
                 var roadsGeos = [];
                 var linesGeos = [];
-                var road_width = 15;
+                var road_width = 9;
                 var line_width = 0.1;
                 var roadCurve, lineCurves, roadObject;
 
