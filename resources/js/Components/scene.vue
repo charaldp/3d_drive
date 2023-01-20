@@ -517,7 +517,7 @@
                     ' <br>Clutch : ' + String( this.car.transmission.clutch.toFixed(1) ) +
                     ' <br>Power : ' + String( this.car.engine._currentPower.toFixed() ) +
                     ' <br>Torque : ' + String( this.car.engine._currentTorque.toFixed() ) +
-                    ' <br>Ackermam Steering Point : ' + String( Number.isFinite(this.car.ackermanSteering.ackermanPoint)?this.car.ackermanSteering.ackermanPoint.toFixed(2):this.car.ackermanSteering.ackermanPoint );
+                    ' <br>Ackerman Steering Point : ' + String( Number.isFinite(this.car.ackermanSteering.ackermanPoint)?this.car.ackermanSteering.ackermanPoint.toFixed(2):this.car.ackermanSteering.ackermanPoint );
                     // console.log(this.car.speed.length());
 
                 this.car.updateLoad();
