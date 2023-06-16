@@ -3,10 +3,10 @@ namespace App\Models\Vehicle;
 
 use App\Models\Vehicle\Vehicle;
 
-class Bike extends Vehicle
+class Motorbike extends Vehicle
 {
 
-    protected $table = 'bikes';
+    protected $table = 'motorbikes';
 
     protected $fillable = [
         'bounding_box',
@@ -21,17 +21,17 @@ class Bike extends Vehicle
 
     public static $vehicle_example = "{
         \"vehicles\" : [{
-          \"type\" : \"Car\",
+          \"type\" : \"Motorbike\",
           \"components\" : {
             \"wheel\" : [{
               \"DO\" : 0.5,
               \"DI\" : 0.43,
               \"t\" : 0.15,
-              \"tireType\" : \"Flat\",
+              \"tireType\" : \"Round\",
               \"tireDims\" : {
-                \"DO\" : 0.5,
                 \"DI\" : 0.43,
-                \"t\" : 0.15
+                \"intrWidth\" : 0.15,
+                \"numPoints\" : 16
               },
               \"rimType\" : \"Ribs\",
               \"rimDims\" : {
@@ -104,7 +104,7 @@ class Bike extends Vehicle
               [-1.85, 0.09],
               [-1.85, 0]
             ],
-            \"wheelsCentersPositions\" :  [ [ -1, 0.8 ], [ 1, 0.8 ] ],
+            \"wheelsCentersPositions\" :  [ [ -1, 0 ], [ 1, 0 ] ],
             \"radius\" : 0.27,
             \"width\" : 1.9,
             \"bevelThickness\" : 0.05

@@ -19,6 +19,7 @@
 	import { Sky } from 'three/examples/jsm/objects/Sky.js';
     import Wheel from './Wheel.js';
     import Car from './Car.js';
+    import Motorbike from './Motorbike.js';
     import Engine from './Engine.js';
     import Construction from './Construction.js';
     import Phys from './Phys.js';
@@ -107,8 +108,12 @@
                     var engine = new Engine.Engine( vehicle.components.engine.shaft_inertia, vehicle.components.engine.rev_limit, vehicle.components.engine.idle_rot, vehicle.components.engine.maximum_hp );//I = M / 2 * R ^ 2 [kg*m^2]
                     if ( vehicle.type === "Car" ) {
                         var car_geo = Car.Car.makeCarGeo( /*2D front to rear points*/vehicle.geometry.pointArray, vehicle.geometry.wheelsCentersPositions, vehicle.geometry.radius, vehicle.geometry.width, vehicle.geometry.bevelThickness );
-                        this.car = new Car.Car( wheel, vehicle.geometry.wheelsCentersPositions, engine, vehicle.mass, transmission, car_geo, vehicle.spawnPosition, this.camera, -1);
-                        components.push( this.car );
+                        this.vehicle = new Car.Car( wheel, vehicle.geometry.wheelsCentersPositions, engine, vehicle.mass, transmission, car_geo, vehicle.spawnPosition, this.camera, -1);
+                        components.push( this.vehicle );
+                    } else if (vehicle.type === "Motorbike" ) {
+                        var bike_geo = Motorbike.Motorbike.makeMotorbikeGeo( /*2D front to rear points*/vehicle.geometry.pointArray, vehicle.geometry.wheelsCentersPositions, vehicle.geometry.radius, vehicle.geometry.width, vehicle.geometry.bevelThickness );
+                        this.vehicle = new Motorbike.Motorbike( wheel, vehicle.geometry.wheelsCentersPositions, engine, vehicle.mass, transmission, bike_geo, vehicle.spawnPosition, this.camera, -1);
+                        components.push( this.vehicle );
                     }
                 });
 
@@ -155,11 +160,11 @@
                 this.cameraOffset = new Three.Vector3()
                 this.cameraOffset.set( - 2 * this.totalLength, this.totalLength / 2, 0 );
                 this.camera = new Three.PerspectiveCamera( 40, window.innerWidth / window.innerHeight, 1, 1000 * this.totalLength);
-                this.camera.position.copy( (this.car.center.clone()).add(this.cameraOffset.applyAxisAngle(new Three.Vector3( 0, 1, 0 ), Math.atan(this.car.frontVector.z / this.car.frontVector.x))));
+                this.camera.position.copy( (this.vehicle.center.clone()).add(this.cameraOffset.applyAxisAngle(new Three.Vector3( 0, 1, 0 ), Math.atan(this.vehicle.frontVector.z / this.vehicle.frontVector.x))));
                 // camera.matrixAutoUpdate = false;
-                this.car.camera = this.camera;
-                this.car.camera.cameraOffset = this.cameraOffset;
-                // this.car.camera.theta = spawnPosition.rotation * 2 * Math.PI;
+                this.vehicle.camera = this.camera;
+                this.vehicle.camera.cameraOffset = this.cameraOffset;
+                // this.vehicle.camera.theta = spawnPosition.rotation * 2 * Math.PI;
                 this.scene.add( this.camera );
 
                 var listener = new Three.AudioListener();
@@ -178,8 +183,8 @@
                 this.controls = new OrbitControls( this.camera, this.renderer.domElement );
                 this.controls.minDistance = this.totalLength / 10;
                 this.controls.maxDistance = 100 * this.totalLength;
-                this.controls.target0 = this.car.center;
-                this.controls.target = this.car.center;
+                this.controls.target0 = this.vehicle.center;
+                this.controls.target = this.vehicle.center;
                 this.controls.maxPolarAngle = Math.PI * 2;
                 this.controls.screenSpacePanning = true;
                 this.controls.enableKeys = false;
@@ -410,32 +415,32 @@
 
                 switch ( e.keyCode ) {
                     case 81: /* q */
-                        if (this.car.transmission.gear === 1)
-                            this.car.transmission.gear = false;
+                        if (this.vehicle.transmission.gear === 1)
+                            this.vehicle.transmission.gear = false;
                         break;
                     case 65: /* a */
-                        if (this.car.transmission.gear === 2)
-                            this.car.transmission.gear = false;
+                        if (this.vehicle.transmission.gear === 2)
+                            this.vehicle.transmission.gear = false;
                         break;
                     case 87: /* w */
-                        if (this.car.transmission.gear === 3)
-                            this.car.transmission.gear = false;
+                        if (this.vehicle.transmission.gear === 3)
+                            this.vehicle.transmission.gear = false;
                         break;
                     case 83: /* s */
-                        if (this.car.transmission.gear === 4)
-                            this.car.transmission.gear = false;
+                        if (this.vehicle.transmission.gear === 4)
+                            this.vehicle.transmission.gear = false;
                         break;
                     case 69: /* e */
-                        if (this.car.transmission.gear === 5)
-                            this.car.transmission.gear = false;
+                        if (this.vehicle.transmission.gear === 5)
+                            this.vehicle.transmission.gear = false;
                         break;
                     case 68: /* d */
-                        if (this.car.transmission.gear === 6)
-                            this.car.transmission.gear = false;
+                        if (this.vehicle.transmission.gear === 6)
+                            this.vehicle.transmission.gear = false;
                         break;
                     case 82: /* r */
-                        if (this.car.transmission.gear === 0)
-                            this.car.transmission.gear = false;
+                        if (this.vehicle.transmission.gear === 0)
+                            this.vehicle.transmission.gear = false;
 				}
             },
             onKeyDown(e) {
@@ -457,25 +462,25 @@
 
                 switch ( e.keyCode ) {
                     case 81: /* q */
-                        this.car.transmission.gear = 1;
+                        this.vehicle.transmission.gear = 1;
                         break;
                     case 65: /* a */
-                        this.car.transmission.gear = 2;
+                        this.vehicle.transmission.gear = 2;
                         break;
                     case 87: /* w */
-                        this.car.transmission.gear = 3;
+                        this.vehicle.transmission.gear = 3;
                         break;
                     case 83: /* s */
-                        this.car.transmission.gear = 4;
+                        this.vehicle.transmission.gear = 4;
                         break;
                     case 69: /* e */
-                        this.car.transmission.gear = 5;
+                        this.vehicle.transmission.gear = 5;
                         break;
                     case 68: /* d */
-                        this.car.transmission.gear = 6;
+                        this.vehicle.transmission.gear = 6;
                         break;
                     case 82: /* r */
-                        this.car.transmission.gear = 0;
+                        this.vehicle.transmission.gear = 0;
                         break;
                     // default:
                     // 	car.transmission.gear = false; !!! Wrong! Key release will do the job
@@ -496,44 +501,44 @@
                 // this.frameBuffer.shift();
                 this.throttle += ( this.up ? ( this.throttle < 2 ? 0.05 * this.timestep : 0 ) : ( this.throttle > 1 ? - 0.1 * this.timestep * (this.throttle - 1) : 0 ) );
                 this.brake += ( this.down ? ( this.brake < 1 ? 0.2 * this.timestep : 0 ) : ( this.brake > 0 ? - 0.4 * this.timestep * this.brake : 0 ) );
-                if ((this.right && this.car.ackermanSteering.steeringWheelPosition > 0) || (this.left && this.car.ackermanSteering.steeringWheelPosition < 0)) {
+                if ((this.right && this.vehicle.ackermanSteering.steeringWheelPosition > 0) || (this.left && this.vehicle.ackermanSteering.steeringWheelPosition < 0)) {
                     // When changing steering side make the steer crispier
-                    this.car.ackermanSteering.steeringWheelPosition *= 0.3;
+                    this.vehicle.ackermanSteering.steeringWheelPosition *= 0.3;
                 }
                 this.steerSpeed =
-                    Math.min( 0.02 * this.car.maxSpeed / Math.abs(this.car.speed), 1)
-                    * ( (this.left ? 0.6 * this.timestep : 0) - (this.right ? 0.6 * this.timestep : 0) ) - (!(this.left || this.right) ?  this.timestep * this.car.ackermanSteering.steeringWheelPosition : 0);
-                // console.log(this.steerSpeed, this.car.maxSpeed);
-                this.car.transmission.clutch += !this.clutch ? (this.car.transmission.clutch < 1 ? 0.05 * this.timestep : 0 ) : (this.car.transmission.clutch > 0 ? - 0.2 * this.timestep * this.car.transmission.clutch : 0 );
-                if (this.car.transmission.clutch < 0) this.car.transmission.clutch = 0;
+                    Math.min( 0.02 * this.vehicle.maxSpeed / Math.abs(this.vehicle.speed), 1)
+                    * ( (this.left ? 0.6 * this.timestep : 0) - (this.right ? 0.6 * this.timestep : 0) ) - (!(this.left || this.right) ?  this.timestep * this.vehicle.ackermanSteering.steeringWheelPosition : 0);
+                // console.log(this.steerSpeed, this.vehicle.maxSpeed);
+                this.vehicle.transmission.clutch += !this.clutch ? (this.vehicle.transmission.clutch < 1 ? 0.05 * this.timestep : 0 ) : (this.vehicle.transmission.clutch > 0 ? - 0.2 * this.timestep * this.vehicle.transmission.clutch : 0 );
+                if (this.vehicle.transmission.clutch < 0) this.vehicle.transmission.clutch = 0;
                 this.HUD.innerHTML =
-                    'Engine RPM : ' + String( (this.car.engine._rot * 60).toFixed() ) +
-                    ' <br>Speed : ' + String( ( this.car.speed * 3.6 ).toFixed(1) ) +
+                    'Engine RPM : ' + String( (this.vehicle.engine._rot * 60).toFixed() ) +
+                    ' <br>Speed : ' + String( ( this.vehicle.speed * 3.6 ).toFixed(1) ) +
                     ' <br>Throttle : ' + String( this.throttle.toFixed(1) ) +
-                    ' <br>Gear : ' + String( this.car.transmission.gear === false ? 'N' : (this.car.transmission.gear !== 0 ? this.car.transmission.gear : 'R') ) +
-                    ' <br>Accelaration : ' + String( this.car.acceleration.toFixed(1) ) +
+                    ' <br>Gear : ' + String( this.vehicle.transmission.gear === false ? 'N' : (this.vehicle.transmission.gear !== 0 ? this.vehicle.transmission.gear : 'R') ) +
+                    ' <br>Accelaration : ' + String( this.vehicle.acceleration.toFixed(1) ) +
                     ' <br>Brake : ' + String( this.brake.toFixed(1) ) +
-                    ' <br>Steering : ' +	String( (this.car.ackermanSteering.steeringWheelPosition).toFixed(1) ) +
-                    ' <br>Clutch : ' + String( this.car.transmission.clutch.toFixed(1) ) +
-                    ' <br>Power : ' + String( this.car.engine._currentPower.toFixed() ) +
-                    ' <br>Torque : ' + String( this.car.engine._currentTorque.toFixed() ) +
-                    ' <br>Ackerman Steering Point : ' + String( Number.isFinite(this.car.ackermanSteering.ackermanPoint)?this.car.ackermanSteering.ackermanPoint.toFixed(2):this.car.ackermanSteering.ackermanPoint );
-                    // console.log(this.car.speed.length());
+                    ' <br>Steering : ' +	String( (this.vehicle.ackermanSteering.steeringWheelPosition).toFixed(1) ) +
+                    ' <br>Clutch : ' + String( this.vehicle.transmission.clutch.toFixed(1) ) +
+                    ' <br>Power : ' + String( this.vehicle.engine._currentPower.toFixed() ) +
+                    ' <br>Torque : ' + String( this.vehicle.engine._currentTorque.toFixed() ) +
+                    ' <br>Ackerman Steering Point : ' + String( Number.isFinite(this.vehicle.ackermanSteering.ackermanPoint)?this.vehicle.ackermanSteering.ackermanPoint.toFixed(2):this.vehicle.ackermanSteering.ackermanPoint );
+                    // console.log(this.vehicle.speed.length());
 
-                this.car.updateLoad();
-                this.car.updateClutchConnection( this.throttle, this.brake, this.timestep / 5 );
-                // if (this.car.engine._rot * 60 < 1000) {
+                this.vehicle.updateLoad();
+                this.vehicle.updateClutchConnection( this.throttle, this.brake, this.timestep / 5 );
+                // if (this.vehicle.engine._rot * 60 < 1000) {
                 //     this.sound.setVolume(0.75 + (0.5 * (this.throttle - 1)));
-                //     this.car.engine._rot * 60
+                //     this.vehicle.engine._rot * 60
                 // }
-                this.sound.setVolume(Math.min((this.car.engine._rot * this.car.engine._rot) / (this.car.engine._idle_rot * this.car.engine._idle_rot), 1) * (0.75 + (0.25 * (this.throttle - 1))));
-                this.sound.setPlaybackRate( isNaN(this.car.engine._rot) ? 0 : this.car.engine._rot / this.car.engine._idle_rot * 0.9 );
-                this.car.updateWheelTransformation( this.timestep / 5, this.steerSpeed );
-                // this.car.moveCar( timestep / 1 );
-                this.car.applyTransformation( this.timestep / 5 );
+                this.sound.setVolume(Math.min((this.vehicle.engine._rot * this.vehicle.engine._rot) / (this.vehicle.engine._idle_rot * this.vehicle.engine._idle_rot), 1) * (0.75 + (0.25 * (this.throttle - 1))));
+                this.sound.setPlaybackRate( isNaN(this.vehicle.engine._rot) ? 0 : this.vehicle.engine._rot / this.vehicle.engine._idle_rot * 0.9 );
+                this.vehicle.updateWheelTransformation( this.timestep / 5, this.steerSpeed );
+                // this.vehicle.moveCar( timestep / 1 );
+                this.vehicle.applyTransformation( this.timestep / 5 );
                 this.scene.updateMatrixWorld();
-                // console.log(this.car.centerTransformation);
-                this.controls.target.copy(this.car.center.clone());
+                // console.log(this.vehicle.centerTransformation);
+                this.controls.target.copy(this.vehicle.center.clone());
                 this.controls.update();
                 this.renderer.render( this.scene, this.camera );
                 this.timer2 = performance.now();
