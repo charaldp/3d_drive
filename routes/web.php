@@ -28,6 +28,9 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/scenevue', function () {
     return view('scene_vue');
 });
+Route::get('/scenephysdemo', function () {
+    return view('scene_phys_demo');
+});
 Route::get('/gameplay', function (Request $request) {
     return view('gameplay/index');
 });

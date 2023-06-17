@@ -32,7 +32,7 @@ Vue.use(Three)
 
 // Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 Vue.component('scene-component', require('./components/scene.vue').default);
-// Vue.component('scene-simple', require('./components/sceneSimple.vue').default);
+Vue.component('scene-simple', require('./components/sceneSimple.vue').default);
 Vue.component('material-selector', require('./garage/fabrication/material_selector.vue').default);
 Vue.component('material-editor', require('./garage/fabrication/material_editor.vue').default);
 
