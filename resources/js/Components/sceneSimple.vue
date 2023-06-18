@@ -34,8 +34,10 @@ export default {
             wheels: {
                 representation: [null, null, null, null],
                 phys: [null, null, null, null],
-                constrain: [null, null, null, null]
+                constraint: [null, null, null, null],
+                axes: [null, null, null, null],
             },
+            rotatingAngle: 0,
             body: {
                 representation: null,
                 phys: null
@@ -68,7 +70,7 @@ export default {
                 new CANNON.Vec3(-3, 1, 2),
                 new CANNON.Vec3(3, 1, 2)
             ];
-            var axes = [
+            this.wheels.axes = [
                 new CANNON.Vec3(0, 0, -1),
                 new CANNON.Vec3(0, 0, -1),
                 new CANNON.Vec3(0, 0, 1),
@@ -94,19 +96,19 @@ export default {
             });
             this.world.addBody(this.body.phys);
             for (let i = 0;i < positions.length ;i++) {
-                this.wheels.constrain[i] = new CANNON.HingeConstraint(
+                this.wheels.constraint[i] = new CANNON.HingeConstraint(
                     this.body.phys,
                     this.wheels.phys[i],
                     {
                         pivotA: new CANNON.Vec3(positions[i].x, 0, positions[i].z),
-                        axisA: axes[i],
+                        axisA: this.wheels.axes[i],
                         pivotB: new CANNON.Vec3(0, 0, 0),
                         axisB: new CANNON.Vec3(0, 0, 1),
                     }
                 );
-                this.wheels.constrain[i].collideConnected = false;
-                this.wheels.constrain[i].update();
-                this.world.addConstraint(this.wheels.constrain[i]);
+                this.wheels.constraint[i].collideConnected = false;
+                this.wheels.constraint[i].update();
+                this.world.addConstraint(this.wheels.constraint[i]);
             }
             this.groundBody = new CANNON.Body({
                 mass: 0 // mass == 0 makes the body static
@@ -227,6 +229,7 @@ export default {
         updatePhysicsStep() {
             // Canonjs
             this.world.step(1/60, 0.001 * this.timestep, 4);
+            this.rotatingAngle += Math.PI / 120;
             for (let i = 0;i < 4 ;i++) {
                 this.wheels.representation[i].position.x = this.wheels.phys[i].position.x;
                 this.wheels.representation[i].position.y = this.wheels.phys[i].position.y;
@@ -235,6 +238,10 @@ export default {
                 this.wheels.representation[i].quaternion.y = this.wheels.phys[i].quaternion.y;
                 this.wheels.representation[i].quaternion.z = this.wheels.phys[i].quaternion.z;
                 this.wheels.representation[i].quaternion.w = this.wheels.phys[i].quaternion.w;
+                if (i == 0 || i == 3) {
+                    this.wheels.constraint[i].axisA.x = this.wheels.axes[i].z * Math.sin(this.rotatingAngle);
+                    this.wheels.constraint[i].axisA.z = this.wheels.axes[i].z * Math.cos(this.rotatingAngle);
+                }
             }
             this.body.representation.position.x = this.body.phys.position.x;
             this.body.representation.position.y = this.body.phys.position.y;
