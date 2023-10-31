@@ -64,11 +64,12 @@ export default {
             //     position: new CANNON.Vec3(0, 5, 0), // m
             //     shape: new CANNON.Cylinder(radius, radius, 0.2*radius, 64)
             // });
+            let vehicle_position = new THREE.Vector3(0, 0.5, 0);
             var positions = [
-                new CANNON.Vec3(3, 1, -2),
-                new CANNON.Vec3(-3, 1, -2),
-                new CANNON.Vec3(-3, 1, 2),
-                new CANNON.Vec3(3, 1, 2)
+                new CANNON.Vec3( + 3,  + 1, - 2),
+                new CANNON.Vec3( - 3,  + 1, - 2),
+                new CANNON.Vec3( - 3,  + 1, + 2),
+                new CANNON.Vec3( + 3,  + 1, + 2)
             ];
             this.wheels.axes = [
                 new CANNON.Vec3(0, 0, -1),
@@ -91,7 +92,7 @@ export default {
             }
             this.body.phys = new CANNON.Body({
                     mass: 500, // kg
-                    position: new CANNON.Vec3(0, 1, 0), // m
+                    position: new CANNON.Vec3(vehicle_position.x, vehicle_position.y + 1, vehicle_position.z), // m
                     shape: new CANNON.Box(new CANNON.Vec3(vehicle_body_dims.x, vehicle_body_dims.y, vehicle_body_dims.z))
             });
             this.world.addBody(this.body.phys);
@@ -164,9 +165,9 @@ export default {
             light.position.set(5, 5, -5)
             this.scene.add( light );
 
-            this.camera.position.x = 25
-            this.camera.position.z = 25
-            this.camera.position.y = 25
+            this.camera.position.x = 5
+            this.camera.position.z = 5
+            this.camera.position.y = 5
             this.controls = new OrbitControls( this.camera, this.renderer.domElement )
             this.controls.target = new THREE.Vector3(0,0,0);
             this.mouse = new THREE.Vector2();
