@@ -55,11 +55,11 @@ class Car{
           // this.wheelGroup.children[i].setRotationFromMatrix ( this.wheelGroup.children[i].matrix );
       }
       this.length = this.max - this.min;
-      console.log(this.length);
+      this.max_ackerman_point = 100000000 * this.length;
       this.ackermanSteering = {
         maxWheelSteer: 50 * Math.PI / 180 /*50 degrees max*/,
-        ackermanPoint: 'Nan' /* 'Nan': rotating around a point at infinite a.k.a. Going Straight*/,
-        steeringWheelPosition: 0};
+        ackermanPoint: this.max_ackerman_point /* Rotating around a point at infinite a.k.a. Going Straight*/,
+        steeringWheelPosition: 0.000001};
       this._wheel = wheel;
       this.maxSpeed = this.engine._rev_limit * this.transmission.gearbox[this.transmission.gearbox.length - 1] * this._wheel.R;
       this.group = new THREE.Group();
@@ -87,7 +87,8 @@ class Car{
         else
           this.wheelMatrices[i][1].copy(this.wheelMatrices[i][0].clone().multiply((new THREE.Matrix4()).makeRotationZ( this.position / ( this._wheel.R *  Math.PI / 2) * timestep * ( i % 2 == 0 ? 1 : -1 ))));
       }
-      this.ackermanSteering.ackermanPoint = ( this.ackermanSteering.steeringWheelPosition > 0 ? 1 : -1 ) * ( this.length / Math.tan(th_out) - this.frontWheelsAxlesWidth / 2 );
+    //   this.ackermanSteering.ackermanPoint = ( this.ackermanSteering.steeringWheelPosition > 0 ? 1 : -1 ) * ( this.length / Math.tan(th_out) - this.frontWheelsAxlesWidth / 2 );
+      this.ackermanSteering.ackermanPoint = Math.min(Math.max(( this.ackermanSteering.steeringWheelPosition > 0 ? 1 : -1 ) * ( this.length / Math.tan(th_out) - this.frontWheelsAxlesWidth / 2 ), - this.max_ackerman_point), this.max_ackerman_point);
     }
 
     updateLoad( ) {

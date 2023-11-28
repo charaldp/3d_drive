@@ -136,7 +136,7 @@
                 this.overlay.style.height = 100;
                 this.HUD.style.backgroundColor = "transparent";
                 this.HUD.innerHTML = "";
-                this.HUD.style.top = '70%';//200 + 'px';
+                this.HUD.style.top = '67%';//200 + 'px';
                 this.overlay.innerHTML = "Throttle, Brake, Steering: Arrow Keys, Clutch: V, Gears 1-6: Q-A-W-S-E-D, Reverse Gear: R";
                 this.overlay.style.top = '0%';//200 + 'px';
                 this.HUD.style.left = 20 + 'px';
@@ -512,17 +512,19 @@
                 this.vehicle.transmission.clutch += !this.clutch ? (this.vehicle.transmission.clutch < 1 ? 0.05 * this.timestep : 0 ) : (this.vehicle.transmission.clutch > 0 ? - 0.2 * this.timestep * this.vehicle.transmission.clutch : 0 );
                 if (this.vehicle.transmission.clutch < 0) this.vehicle.transmission.clutch = 0;
                 this.HUD.innerHTML =
-                    'Engine RPM : ' + String( (this.vehicle.engine._rot * 60).toFixed() ) +
-                    ' <br>Speed : ' + String( ( this.vehicle.speed * 3.6 ).toFixed(1) ) +
-                    ' <br>Throttle : ' + String( this.throttle.toFixed(1) ) +
-                    ' <br>Gear : ' + String( this.vehicle.transmission.gear === false ? 'N' : (this.vehicle.transmission.gear !== 0 ? this.vehicle.transmission.gear : 'R') ) +
-                    ' <br>Accelaration : ' + String( this.vehicle.acceleration.toFixed(1) ) +
-                    ' <br>Brake : ' + String( this.brake.toFixed(1) ) +
-                    ' <br>Steering : ' +	String( (this.vehicle.ackermanSteering.steeringWheelPosition).toFixed(1) ) +
-                    ' <br>Clutch : ' + String( this.vehicle.transmission.clutch.toFixed(1) ) +
-                    ' <br>Power : ' + String( this.vehicle.engine._currentPower.toFixed() ) +
-                    ' <br>Torque : ' + String( this.vehicle.engine._currentTorque.toFixed() ) +
-                    ' <br>Ackerman Steering Point : ' + String( Number.isFinite(this.vehicle.ackermanSteering.ackermanPoint)?this.vehicle.ackermanSteering.ackermanPoint.toFixed(2):this.vehicle.ackermanSteering.ackermanPoint );
+                    '<table style="opacity: 0.8; background-color:#A3A7AB">' +
+                    '<tr><td>Engine RPM : <b>' + String( (this.vehicle.engine._rot * 60).toFixed() ) + '</b>' +
+                    '</tr></td><tr><td>Speed : <b>' + String( ( this.vehicle.speed * 3.6 ).toFixed(1) ) + '</b>' +
+                    '</tr></td><tr><td>Throttle : <b>' + String( this.throttle.toFixed(1) ) + '</b>' +
+                    '</tr></td><tr><td>Gear : <b>' + String( this.vehicle.transmission.gear === false ? 'N' : (this.vehicle.transmission.gear !== 0 ? this.vehicle.transmission.gear : 'R') ) + '</b>' +
+                    '</tr></td><tr><td>Accelaration : <b>' + String( this.vehicle.acceleration.toFixed(1) ) + '</b>' +
+                    '</tr></td><tr><td>Brake : <b>' + String( this.brake.toFixed(1) ) + '</b>' +
+                    '</tr></td><tr><td>Steering : <b>' +	String( (this.vehicle.ackermanSteering.steeringWheelPosition).toFixed(1) ) + '</b>' +
+                    '</tr></td><tr><td>Clutch : <b>' + String( this.vehicle.transmission.clutch.toFixed(1) ) + '</b>' +
+                    '</tr></td><tr><td>Power : <b>' + String( this.vehicle.engine._currentPower.toFixed() ) + '</b>' +
+                    '</tr></td><tr><td>Torque : <b>' + String( this.vehicle.engine._currentTorque.toFixed() ) + '</b>' +
+                    '</tr></td><tr><td>Ackerman Steering Point : <b>' + String( Number.isFinite(this.vehicle.ackermanSteering.ackermanPoint)?this.vehicle.ackermanSteering.ackermanPoint.toFixed(2):this.vehicle.ackermanSteering.ackermanPoint ) + '</b>' +
+                    '</tr></td></table>';
                     // console.log(this.vehicle.speed.length());
 
                 this.vehicle.updateLoad();
