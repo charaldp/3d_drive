@@ -337,7 +337,7 @@
                 }
                 let transformationNext = new THREE.Matrix4();
                 let roadRadius, angle, length, sign;
-                for ( i = 0; i < 2000 ; i++ ) {
+                for ( i = 0; i < 200 ; i++ ) {
                     // let roadRadius = Math.random() * 50 + 10;
                     // let angle = Math.random() * 0.6 * Math.PI + 0.1 * Math.PI;
                     let rand1 = Math.random();

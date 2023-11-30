@@ -81,7 +81,7 @@ export default {
                 this.wheels.phys[i] = new CANNON.Body({
                     mass: 25, // kg
                     position: positions[i], // m
-                    shape: new CANNON.Cylinder(radius, radius, 0.3*radius, 64)
+                    shape: new CANNON.Cylinder(radius, radius, 0.3*radius, 256)
                 });
                 this.world.addBody(this.wheels.phys[i]);
             }
@@ -101,7 +101,7 @@ export default {
                     this.body.phys,
                     this.wheels.phys[i],
                     {
-                        pivotA: new CANNON.Vec3(positions[i].x, 0, positions[i].z),
+                        pivotA: new CANNON.Vec3(positions[i].x, -0.2, positions[i].z),
                         axisA: this.wheels.axes[i],
                         pivotB: new CANNON.Vec3(0, 0, 0),
                         axisB: new CANNON.Vec3(0, 0, 1),
@@ -136,7 +136,7 @@ export default {
             // document.body.appendChild(this.renderer.domElement);
 
             // const geometry = new THREE.CylinderGeometry(0.5, 0.5, 0.3, 64, 10).rotateX(Math.PI / 2).translate(0, 0.5, 0);
-            const geometry = new THREE.CylinderGeometry(radius, radius, 0.3 * radius, 32, 32).rotateX(-Math.PI / 2);
+            const geometry = new THREE.CylinderGeometry(radius, radius, 0.3 * radius, 256, 4).rotateX(-Math.PI / 2);
             const vehicle_body_geometry = new THREE.BoxGeometry(2 * vehicle_body_dims.x, 2 * vehicle_body_dims.z, 2 * vehicle_body_dims.y).rotateX(-Math.PI / 2);
             // const geometry = new THREE.SphereGeometry(1, 32, 32)
             const planeGeometry = new THREE.PlaneGeometry(40, 40, 10, 10).rotateX(-Math.PI / 2);
@@ -172,6 +172,14 @@ export default {
             this.controls.target = new THREE.Vector3(0,0,0);
             this.mouse = new THREE.Vector2();
             this.raycaster = new THREE.Raycaster();
+            for (let i = 0;i < 4 ;i++) {
+                if (i == 1 || i == 2) {
+                    this.wheels.constraint[i].motorEquation.enabled = true;
+                    this.wheels.constraint[i].motorEquation.maxForce = 10;
+                    this.wheels.constraint[i].motorEquation.minForce = -10;
+                    this.wheels.constraint[i].motorEquation.targetVelocity = 1;
+                }
+            }
         },
         animate: function() {
             requestAnimationFrame(this.animate);
@@ -192,7 +200,6 @@ export default {
             // this.world.bodies[0].velocity.y += 5
             const intersects = this.raycaster.intersectObjects( this.scene.children );
             if (intersects.length > 0) {
-                console.log(this.camera, intersects);
                 for (let i = 0; i < 4; i++) {
                     if (intersects[ 0 ].object.uuid == this.wheels.representation[ i ].uuid) {
                         // this.camera.getWorldDirection();
@@ -210,10 +217,6 @@ export default {
                         this.body.phys.applyImpulse(new CANNON.Vec3(50 * vector.x, 50 * vector.y, 50 * vector.z), new CANNON.Vec3(intersects[0].point.x, intersects[0].point.y, intersects[0].point.z));
                 }
             }
-            // for ( let i = 0; i < intersects.length; i ++ ) {
-
-            // }
-            // console.log(this.world.bodies[0], this.world.bodies[0].velocity.y);
         },
         updatePhysics() {
             if (this.cube.position.y <= 0) {
@@ -230,7 +233,7 @@ export default {
         updatePhysicsStep() {
             // Canonjs
             this.world.step(1/60, 0.001 * this.timestep, 4);
-            this.rotatingAngle += Math.PI / 120;
+            this.rotatingAngle += Math.PI / 1200;
             for (let i = 0;i < 4 ;i++) {
                 this.wheels.representation[i].position.x = this.wheels.phys[i].position.x;
                 this.wheels.representation[i].position.y = this.wheels.phys[i].position.y;
@@ -242,6 +245,12 @@ export default {
                 if (i == 0 || i == 3) {
                     this.wheels.constraint[i].axisA.x = this.wheels.axes[i].z * Math.sin(this.rotatingAngle);
                     this.wheels.constraint[i].axisA.z = this.wheels.axes[i].z * Math.cos(this.rotatingAngle);
+                } else {
+                    this.wheels.constraint[i].motorEquation.maxForce *= 1.001;
+                    this.wheels.constraint[i].motorEquation.minForce *= 1.001;
+                    this.wheels.constraint[i].motorEquation.targetVelocity *= 1.001;
+
+                    // this.wheels.constraint[i].motorEquation.targetVelocity *= 1.001;
                 }
             }
             this.body.representation.position.x = this.body.phys.position.x;
