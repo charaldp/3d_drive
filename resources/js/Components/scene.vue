@@ -3,6 +3,7 @@
 </template>
 <script>
 	import * as Three from 'three';
+    import * as CANNON from 'cannon'
 	// const THREE = Three;
     // import Sky from 'three';
     import Utils from './Utils.js';
@@ -70,6 +71,17 @@
                     // rim: new Three.MeshPhysicalMaterial( { color: 0xd7d7d7, roughness: 0.17, metalness: 0.47, reflectivity: 1, clearCoat: 0.64, clearCoatRoughness: 0.22 } ),
                     // building: new Three.MeshLambertMaterial( { color: 0xcccccc, opacity: 0.95, transparent: true } ),
                     // ground: new Three.MeshBasicMaterial( { color: 0x77aa22, side: Three.FrontSide, opacity: 0.65, transparent: true } )
+                },
+                wheels: {
+                    representation: [null, null, null, null],
+                    phys: [null, null, null, null],
+                    constraint: [null, null, null, null],
+                    axes: [null, null, null, null],
+                },
+                rotatingAngle: 0,
+                body: {
+                    representation: null,
+                    phys: null
                 },
             }
         },
@@ -389,6 +401,7 @@
 
                 this.scene.autoUpdate = false;
                 this.timer2 = performance.now();
+                this.init();
                 // this.frameBuffer = [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ];
                 document.addEventListener( 'keyup', this.onKeyUp )
                 document.addEventListener( 'keydown', this.onKeyDown )
@@ -396,6 +409,98 @@
             })
         },
         methods: {
+            init() {
+                this.world = new CANNON.World();
+                this.world.gravity.set(0, -9.82, 0); // m/s²
+                var radius = 0.6; // m
+                // this.wheels[0] = new CANNON.Body({
+                //     mass: 5, // kg
+                //     position: new CANNON.Vec3(0, 5, 0), // m
+                //     shape: new CANNON.Cylinder(radius, radius, 0.2*radius, 64)
+                // });
+                let vehicle_position = new THREE.Vector3(0, 0.5, 0);
+                var positions = [
+                    new CANNON.Vec3( + 3,  + 1, - 2),
+                    new CANNON.Vec3( - 3,  + 1, - 2),
+                    new CANNON.Vec3( - 3,  + 1, + 2),
+                    new CANNON.Vec3( + 3,  + 1, + 2)
+                ];
+                this.wheels.axes = [
+                    new CANNON.Vec3(0, 0, -1),
+                    new CANNON.Vec3(0, 0, -1),
+                    new CANNON.Vec3(0, 0, 1),
+                    new CANNON.Vec3(0, 0, 1)
+                ];
+                for (let i = 0;i < positions.length ;i++) {
+                    this.wheels.phys[i] = new CANNON.Body({
+                        mass: 25, // kg
+                        position: positions[i], // m
+                        shape: new CANNON.Cylinder(radius, radius, 0.3*radius, 256)
+                    });
+                    this.world.addBody(this.wheels.phys[i]);
+                }
+                var vehicle_body_dims = {
+                    x: 3 - 0.2 * radius,
+                    y: 0.5,
+                    z: 2 - 0.2 * radius,
+                }
+                this.body.phys = new CANNON.Body({
+                        mass: 500, // kg
+                        position: new CANNON.Vec3(vehicle_position.x, vehicle_position.y + 1, vehicle_position.z), // m
+                        shape: new CANNON.Box(new CANNON.Vec3(vehicle_body_dims.x, vehicle_body_dims.y, vehicle_body_dims.z))
+                });
+                this.world.addBody(this.body.phys);
+                for (let i = 0;i < positions.length ;i++) {
+                    this.wheels.constraint[i] = new CANNON.HingeConstraint(
+                        this.body.phys,
+                        this.wheels.phys[i],
+                        {
+                            pivotA: new CANNON.Vec3(positions[i].x, -0.2, positions[i].z),
+                            axisA: this.wheels.axes[i],
+                            pivotB: new CANNON.Vec3(0, 0, 0),
+                            axisB: new CANNON.Vec3(0, 0, 1),
+                        }
+                    );
+                    this.wheels.constraint[i].collideConnected = false;
+                    this.wheels.constraint[i].update();
+                    this.world.addConstraint(this.wheels.constraint[i]);
+                }
+                this.groundBody = new CANNON.Body({
+                    mass: 0 // mass == 0 makes the body static
+                });
+                var groundShape = new CANNON.Plane();
+                this.groundBody.addShape(groundShape);
+                var axis = new CANNON.Vec3(1,0,0);
+                this.groundBody.quaternion.setFromAxisAngle(axis, - Math.PI / 2);
+                this.world.addBody(this.groundBody);
+
+                const geometry = new THREE.CylinderGeometry(radius, radius, 0.3 * radius, 256, 4).rotateX(-Math.PI / 2);
+                const vehicle_body_geometry = new THREE.BoxGeometry(2 * vehicle_body_dims.x, 2 * vehicle_body_dims.z, 2 * vehicle_body_dims.y).rotateX(-Math.PI / 2);
+                // const geometry = new THREE.SphereGeometry(1, 32, 32)
+                const planeGeometry = new THREE.PlaneGeometry(40, 40, 10, 10).rotateX(-Math.PI / 2);
+                // const material = new THREE.MeshBasicMaterial({ color: 0xffff00 })
+                // const groundMaterial = new THREE.MeshBasicMaterial({ color: 0x44ff00, side: THREE.DoubleSide })
+                const groundMaterial = new THREE.MeshPhongMaterial({ color: 0x00ff00, shininess: 100 })
+                const material = new THREE.MeshPhysicalMaterial({ color: 0xffff00, clearcoat: 0.1, clearcoatRoughness: 0.3, reflectivity: 0.9, metalness: 0.3 })
+                const body_material = new THREE.MeshPhysicalMaterial({ color: 0x333333, clearcoat: 0.1, clearcoatRoughness: 0.3, reflectivity: 0.9, metalness: 0.3 })
+
+                var x = 0;
+
+                for (let i = 0;i < positions.length ;i++) {
+                    this.wheels.representation[i] = new THREE.Mesh(geometry, material.clone());
+                    this.scene.add(this.wheels.representation[i])
+                }
+                this.body.representation = new THREE.Mesh(vehicle_body_geometry, body_material.clone());
+                this.scene.add(this.body.representation)
+                    for (let i = 0;i < 4 ;i++) {
+                    if (i == 1 || i == 2) {
+                        this.wheels.constraint[i].motorEquation.enabled = true;
+                        this.wheels.constraint[i].motorEquation.maxForce = 10;
+                        this.wheels.constraint[i].motorEquation.minForce = -10;
+                        this.wheels.constraint[i].motorEquation.targetVelocity = 1;
+                    }
+                }
+            },
             onKeyUp(e) {
                 if (e.keyCode === 38 /* up */){
                     this.up = false;
@@ -486,6 +591,37 @@
                     // 	car.transmission.gear = false; !!! Wrong! Key release will do the job
                 }
             },
+            updatePhysicsStep() {
+                // Canonjs
+                this.world.step(1/60, 0.1 * this.timestep, 4);
+                this.rotatingAngle += Math.PI / 1200;
+                for (let i = 0;i < 4 ;i++) {
+                    this.wheels.representation[i].position.x = this.wheels.phys[i].position.x;
+                    this.wheels.representation[i].position.y = this.wheels.phys[i].position.y;
+                    this.wheels.representation[i].position.z = this.wheels.phys[i].position.z;
+                    this.wheels.representation[i].quaternion.x = this.wheels.phys[i].quaternion.x;
+                    this.wheels.representation[i].quaternion.y = this.wheels.phys[i].quaternion.y;
+                    this.wheels.representation[i].quaternion.z = this.wheels.phys[i].quaternion.z;
+                    this.wheels.representation[i].quaternion.w = this.wheels.phys[i].quaternion.w;
+                    if (i == 0 || i == 3) {
+                        this.wheels.constraint[i].axisA.x = this.wheels.axes[i].z * Math.sin(this.rotatingAngle);
+                        this.wheels.constraint[i].axisA.z = this.wheels.axes[i].z * Math.cos(this.rotatingAngle);
+                    } else {
+                        this.wheels.constraint[i].motorEquation.maxForce *= 1.001;
+                        this.wheels.constraint[i].motorEquation.minForce *= 1.001;
+                        this.wheels.constraint[i].motorEquation.targetVelocity *= 1.001;
+
+                        // this.wheels.constraint[i].motorEquation.targetVelocity *= 1.001;
+                    }
+                }
+                this.body.representation.position.x = this.body.phys.position.x;
+                this.body.representation.position.y = this.body.phys.position.y;
+                this.body.representation.position.z = this.body.phys.position.z;
+                this.body.representation.quaternion.x = this.body.phys.quaternion.x;
+                this.body.representation.quaternion.y = this.body.phys.quaternion.y;
+                this.body.representation.quaternion.z = this.body.phys.quaternion.z;
+                this.body.representation.quaternion.w = this.body.phys.quaternion.w;
+            },
             animate: function() {
                 requestAnimationFrame( this.animate );
                 // this.render();
@@ -495,6 +631,8 @@
                 this.timestep = 0.5;
                 // timestep = clock.getDelta();
                 this.timer1 = performance.now();
+                this.updatePhysicsStep();
+
                 // console.log(timer1);
                 // this.frameBuffer.push( this.timestep );
                 // this.overlay.innerHTML = 'Framerate : ' + String( 1000 / ( this.frameBuffer.reduce((a, b) => a + b, 0) / this.frameBuffer.length ).toFixed() ) + ' FPS';
