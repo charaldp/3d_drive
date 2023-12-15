@@ -28,7 +28,9 @@ class Car{
       this.camera = camera;
       this.cameraTrackOnMove = true;
       this.wheelMatrices = [];
+      this.wheelSteerAngle = [];
       for ( var i = 0; i < this.wheelGroup.children.length; i++ ) {
+        this.wheelSteerAngle[i] = 0;
         this.wheelMatrices.push([new THREE.Matrix4(), new THREE.Matrix4()]);
         this.wheelMatrices[i][0].makeRotationAxis( this.upVector,  Math.PI * ( i % 2 == 0 ? 1 : 0 ) );
         this.wheelMatrices[i][0].setPosition( new THREE.Vector3(wheelsPositions[ Math.floor(i / 2)][0], wheel.R, wheelsPositions[ Math.floor(i / 2)][1] * ( i % 2 == 0 ? -1 : 1 ) ));
@@ -82,8 +84,10 @@ class Car{
       // th_out = acot(cot(th_in) - d / l)
       let th_out = Math.PI / 2 - Math.atan( 1 / Math.tan( Math.abs(this.ackermanSteering.steeringWheelPosition) ) + this.frontWheelsAxlesWidth / this.length );
       for ( var i = 0; i < this.wheelMatrices.length; i++ ) {
-        if ( i == 2 || i == 3 )
-          this.wheelMatrices[i][1].copy(this.wheelMatrices[i][0].clone().multiply((new THREE.Matrix4()).makeRotationY( (i - 2.5/* Index 2 and3*/) * this.ackermanSteering.steeringWheelPosition < 0 ? this.ackermanSteering.steeringWheelPosition : Math.sign(this.ackermanSteering.steeringWheelPosition) * th_out )).multiply((new THREE.Matrix4()).makeRotationZ( this.position / ( this._wheel.R *  Math.PI / 2) * timestep * ( i % 2 == 0 ? 1 : -1 ))));
+        if ( i == 2 || i == 3 ) {
+            this.wheelSteerAngle[i] = (i - 2.5/* Index 2 and3*/) * this.ackermanSteering.steeringWheelPosition < 0 ? this.ackermanSteering.steeringWheelPosition : Math.sign(this.ackermanSteering.steeringWheelPosition) * th_out ;
+            this.wheelMatrices[i][1].copy(this.wheelMatrices[i][0].clone().multiply((new THREE.Matrix4()).makeRotationY(this.wheelSteerAngle[i]))).multiply((new THREE.Matrix4()).makeRotationZ( this.position / ( this._wheel.R *  Math.PI / 2) * timestep * ( i % 2 == 0 ? 1 : -1 )));
+        }
         else
           this.wheelMatrices[i][1].copy(this.wheelMatrices[i][0].clone().multiply((new THREE.Matrix4()).makeRotationZ( this.position / ( this._wheel.R *  Math.PI / 2) * timestep * ( i % 2 == 0 ? 1 : -1 ))));
       }

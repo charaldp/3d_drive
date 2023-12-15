@@ -44,8 +44,6 @@
                 childs: '',
                 car: {},
                 steerSpeed: 0,
-                timer1: 0,
-                timer2: 0,
                 frameBuffer: [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
                 timestep: 0.01,
                 throttle: 1,
@@ -66,12 +64,7 @@
                 sceneCenter: new Three.Vector3(),
                 dimDiv: 1, // This variable divides all dimension data in order to provide a better visualization
                 utils: {},
-                meshMaterial: {
-                    // tire: new Three.MeshPhongMaterial( { shininess: 50, color : 0x1b1b1b } ),
-                    // rim: new Three.MeshPhysicalMaterial( { color: 0xd7d7d7, roughness: 0.17, metalness: 0.47, reflectivity: 1, clearCoat: 0.64, clearCoatRoughness: 0.22 } ),
-                    // building: new Three.MeshLambertMaterial( { color: 0xcccccc, opacity: 0.95, transparent: true } ),
-                    // ground: new Three.MeshBasicMaterial( { color: 0x77aa22, side: Three.FrontSide, opacity: 0.65, transparent: true } )
-                },
+                meshMaterial: {},
                 wheels: {
                     representation: [null, null, null, null],
                     phys: [null, null, null, null],
@@ -101,9 +94,6 @@
                 this.sceneGeometry = new Three.BufferGeometry();
                 var components = [];
                 this.json.vehicles.forEach( vehicle => {
-                    // var wheelMaterials = {rim : new Three.MeshPhongMaterial(vehicle.components.wheel[0].meshMaterial.rim), tire : new Three.MeshPhysicalMaterial(vehicle.components.wheel[0].meshMaterial.tire) };
-                    // wheelMaterials.rim.color = parseInt(vehicle.components.wheel[0].meshMaterial.rim.colour);
-                    // wheelMaterials.tire.color = parseInt(vehicle.components.wheel[0].meshMaterial.tire.colour);
                     this.meshMaterial = {
                         tire: new Three.MeshPhongMaterial( { shininess: 50, color : 0x1b1b1b } ),
                         rim: new Three.MeshPhysicalMaterial( { color: 0xd7d7d7, roughness: 0.17, metalness: 0.47, reflectivity: 1, clearCoat: 0.64, clearCoatRoughness: 0.22 } ),
@@ -128,15 +118,7 @@
                         components.push( this.vehicle );
                     }
                 });
-
-                // var physics = new Phys( 9.81, 0.8, 1, [] );
-                // let container = this.$refs.scene_container;
-                // console.log(this.$refs);
                 this.$refs.container.appendChild(this.renderer.domElement);
-                // var renderer = new Three.WebGLRenderer( { antialias: true } );
-                // renderer.setPixelRatio( container.devicePixelRatio );
-                // renderer.setSize( container.innerWidth, container.innerHeight );
-                // document.body.appendChild( renderer.domElement );
                 this.HUD = document.createElement('div');
                 this.overlay = document.createElement('div');
                 this.HUD.style.position = 'absolute';
@@ -201,7 +183,6 @@
                 this.controls.screenSpacePanning = true;
                 this.controls.enableKeys = false;
                 this.controls.update();
-                // console.log(controls);
 
                 this.scene.add( new Three.AmbientLight( 0x222222 ) );
 
@@ -219,24 +200,12 @@
                 sunSphere.position.y = - 700000;
                 sunSphere.visible = true;
                 this.scene.add( sunSphere );
-
-                // var effectController = {
-                // 	turbidity: 10,
-                // 	rayleigh: 2,
-                // 	mieCoefficient: 0.005,
-                // 	mieDirectionalG: 0.8,
-                // 	luminance: 1,
-                // 	inclination: 0.49, // elevation / inclination
-                // 	azimuth: 0.25, // Facing front,
-                // 	sun: true
-                // };
                 var distance = 400000;
                 var effectController = {
                     turbidity: 6.1,
                     rayleigh: 1.466,
                     mieCoefficient: 0.016,
                     mieDirectionalG: 0.475,
-                    // luminance: 1.1,
                     inclination: 0.0847, // elevation / inclination
                     azimuth: 0.2029, // Facing front,
                     sun: true
@@ -244,7 +213,6 @@
                 var uniforms = sky.material.uniforms;
                 uniforms[ "turbidity" ].value = effectController.turbidity;
                 uniforms[ "rayleigh" ].value = effectController.rayleigh;
-                // uniforms[ "luminance" ].value = effectController.luminance;
                 uniforms[ "mieCoefficient" ].value = effectController.mieCoefficient;
                 uniforms[ "mieDirectionalG" ].value = effectController.mieDirectionalG;
 
@@ -261,9 +229,6 @@
                 this.scene.add( new Three.AxesHelper( 5000 ) );
 
                 this.scene.add( this.group );
-
-                // Preview Overall scene geometry
-                // group.add(new Three.Mesh(sceneGeometry.clone(), meshMaterial.outside.clone()));
 
                 // Add ground plane
                 var planeGeo = new Three.PlaneGeometry( 1000 * this.totalLength, 1000 * this.totalLength );
@@ -350,8 +315,6 @@
                 let transformationNext = new THREE.Matrix4();
                 let roadRadius, angle, length, sign;
                 for ( i = 0; i < 200 ; i++ ) {
-                    // let roadRadius = Math.random() * 50 + 10;
-                    // let angle = Math.random() * 0.6 * Math.PI + 0.1 * Math.PI;
                     let rand1 = Math.random();
                     if (rand1 < 0.7) {
                         length = 30 + Math.random() * 200;
@@ -400,9 +363,7 @@
                                 this.childs.push( this.group.children[i].children[j].children[k] );
 
                 this.scene.autoUpdate = false;
-                this.timer2 = performance.now();
                 this.init();
-                // this.frameBuffer = [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ];
                 document.addEventListener( 'keyup', this.onKeyUp )
                 document.addEventListener( 'keydown', this.onKeyDown )
                 this.animate();
@@ -412,18 +373,18 @@
             init() {
                 this.world = new CANNON.World();
                 this.world.gravity.set(0, -9.82, 0); // m/s²
-                var radius = 0.6; // m
-                // this.wheels[0] = new CANNON.Body({
-                //     mass: 5, // kg
-                //     position: new CANNON.Vec3(0, 5, 0), // m
-                //     shape: new CANNON.Cylinder(radius, radius, 0.2*radius, 64)
-                // });
+                var wheelPointsDetail = 16;
+                console.log(this.json.vehicles[0]);
+                const wheel_D = this.json.vehicles[0].components.wheel[0].DO;
+                const wheel_positions = this.json.vehicles[0].geometry.wheelsCentersPositions;
+                var radius = wheel_D / 2; // m
+                // console.log();
                 let vehicle_position = new THREE.Vector3(0, 0.5, 0);
                 var positions = [
-                    new CANNON.Vec3( + 3,  + 1, - 2),
-                    new CANNON.Vec3( - 3,  + 1, - 2),
-                    new CANNON.Vec3( - 3,  + 1, + 2),
-                    new CANNON.Vec3( + 3,  + 1, + 2)
+                    new CANNON.Vec3( + wheel_positions[1][0],  + 1, - wheel_positions[1][1]),
+                    new CANNON.Vec3( - wheel_positions[1][0],  + 1, - wheel_positions[1][1]),
+                    new CANNON.Vec3( - wheel_positions[1][0],  + 1, + wheel_positions[1][1]),
+                    new CANNON.Vec3( + wheel_positions[1][0],  + 1, + wheel_positions[1][1])
                 ];
                 this.wheels.axes = [
                     new CANNON.Vec3(0, 0, -1),
@@ -435,18 +396,18 @@
                     this.wheels.phys[i] = new CANNON.Body({
                         mass: 25, // kg
                         position: positions[i], // m
-                        shape: new CANNON.Cylinder(radius, radius, 0.3*radius, 256)
+                        shape: new CANNON.Cylinder(radius, radius, 0.3*radius, wheelPointsDetail)
                     });
                     this.world.addBody(this.wheels.phys[i]);
                 }
                 var vehicle_body_dims = {
-                    x: 3 - 0.2 * radius,
-                    y: 0.5,
-                    z: 2 - 0.2 * radius,
+                    x: wheel_positions[1][0] - 0.2 * radius,
+                    y: 0.2,
+                    z: wheel_positions[1][1] - 0.2 * radius,
                 }
                 this.body.phys = new CANNON.Body({
                         mass: 500, // kg
-                        position: new CANNON.Vec3(vehicle_position.x, vehicle_position.y + 1, vehicle_position.z), // m
+                        position: new CANNON.Vec3(vehicle_position.x, vehicle_position.y, vehicle_position.z), // m
                         shape: new CANNON.Box(new CANNON.Vec3(vehicle_body_dims.x, vehicle_body_dims.y, vehicle_body_dims.z))
                 });
                 this.world.addBody(this.body.phys);
@@ -455,7 +416,7 @@
                         this.body.phys,
                         this.wheels.phys[i],
                         {
-                            pivotA: new CANNON.Vec3(positions[i].x, -0.2, positions[i].z),
+                            pivotA: new CANNON.Vec3(positions[i].x, 0, positions[i].z),
                             axisA: this.wheels.axes[i],
                             pivotB: new CANNON.Vec3(0, 0, 0),
                             axisB: new CANNON.Vec3(0, 0, 1),
@@ -474,17 +435,10 @@
                 this.groundBody.quaternion.setFromAxisAngle(axis, - Math.PI / 2);
                 this.world.addBody(this.groundBody);
 
-                const geometry = new THREE.CylinderGeometry(radius, radius, 0.3 * radius, 256, 4).rotateX(-Math.PI / 2);
+                const geometry = new THREE.CylinderGeometry(radius, radius, 0.3 * radius, wheelPointsDetail, 4).rotateX(-Math.PI / 2);
                 const vehicle_body_geometry = new THREE.BoxGeometry(2 * vehicle_body_dims.x, 2 * vehicle_body_dims.z, 2 * vehicle_body_dims.y).rotateX(-Math.PI / 2);
-                // const geometry = new THREE.SphereGeometry(1, 32, 32)
-                const planeGeometry = new THREE.PlaneGeometry(40, 40, 10, 10).rotateX(-Math.PI / 2);
-                // const material = new THREE.MeshBasicMaterial({ color: 0xffff00 })
-                // const groundMaterial = new THREE.MeshBasicMaterial({ color: 0x44ff00, side: THREE.DoubleSide })
-                const groundMaterial = new THREE.MeshPhongMaterial({ color: 0x00ff00, shininess: 100 })
                 const material = new THREE.MeshPhysicalMaterial({ color: 0xffff00, clearcoat: 0.1, clearcoatRoughness: 0.3, reflectivity: 0.9, metalness: 0.3 })
                 const body_material = new THREE.MeshPhysicalMaterial({ color: 0x333333, clearcoat: 0.1, clearcoatRoughness: 0.3, reflectivity: 0.9, metalness: 0.3 })
-
-                var x = 0;
 
                 for (let i = 0;i < positions.length ;i++) {
                     this.wheels.representation[i] = new THREE.Mesh(geometry, material.clone());
@@ -494,10 +448,10 @@
                 this.scene.add(this.body.representation)
                     for (let i = 0;i < 4 ;i++) {
                     if (i == 1 || i == 2) {
-                        this.wheels.constraint[i].motorEquation.enabled = true;
-                        this.wheels.constraint[i].motorEquation.maxForce = 10;
-                        this.wheels.constraint[i].motorEquation.minForce = -10;
-                        this.wheels.constraint[i].motorEquation.targetVelocity = 1;
+                        // this.wheels.constraint[i].motorEquation.enabled = true;
+                        // this.wheels.constraint[i].motorEquation.maxForce = 10;
+                        // this.wheels.constraint[i].motorEquation.minForce = -10;
+                        // this.wheels.constraint[i].motorEquation.targetVelocity = 1;
                     }
                 }
             },
@@ -587,8 +541,7 @@
                     case 82: /* r */
                         this.vehicle.transmission.gear = 0;
                         break;
-                    // default:
-                    // 	car.transmission.gear = false; !!! Wrong! Key release will do the job
+                    default:
                 }
             },
             updatePhysicsStep() {
@@ -604,13 +557,12 @@
                     this.wheels.representation[i].quaternion.z = this.wheels.phys[i].quaternion.z;
                     this.wheels.representation[i].quaternion.w = this.wheels.phys[i].quaternion.w;
                     if (i == 0 || i == 3) {
-                        this.wheels.constraint[i].axisA.x = this.wheels.axes[i].z * Math.sin(this.rotatingAngle);
-                        this.wheels.constraint[i].axisA.z = this.wheels.axes[i].z * Math.cos(this.rotatingAngle);
+                        const angle = i == 0? this.vehicle.wheelSteerAngle[2]: this.vehicle.wheelSteerAngle[3];
+                        this.wheels.constraint[i].axisA.x = this.wheels.axes[i].z * Math.sin(angle);
+                        this.wheels.constraint[i].axisA.z = this.wheels.axes[i].z * Math.cos(angle);
                     } else {
-                        this.wheels.constraint[i].motorEquation.maxForce *= 1.001;
-                        this.wheels.constraint[i].motorEquation.minForce *= 1.001;
-                        this.wheels.constraint[i].motorEquation.targetVelocity *= 1.001;
-
+                        // this.wheels.constraint[i].motorEquation.maxForce *= 1.001;
+                        // this.wheels.constraint[i].motorEquation.minForce *= 1.001;
                         // this.wheels.constraint[i].motorEquation.targetVelocity *= 1.001;
                     }
                 }
@@ -624,19 +576,9 @@
             },
             animate: function() {
                 requestAnimationFrame( this.animate );
-                // this.render();
-            // },
-            // render() {
-                // this.timestep = this.timer2 - this.timer1;
                 this.timestep = 0.5;
-                // timestep = clock.getDelta();
-                this.timer1 = performance.now();
                 this.updatePhysicsStep();
 
-                // console.log(timer1);
-                // this.frameBuffer.push( this.timestep );
-                // this.overlay.innerHTML = 'Framerate : ' + String( 1000 / ( this.frameBuffer.reduce((a, b) => a + b, 0) / this.frameBuffer.length ).toFixed() ) + ' FPS';
-                // this.frameBuffer.shift();
                 this.throttle += ( this.up ? ( this.throttle < 2 ? 0.05 * this.timestep : 0 ) : ( this.throttle > 1 ? - 0.1 * this.timestep * (this.throttle - 1) : 0 ) );
                 this.brake += ( this.down ? ( this.brake < 1 ? 0.2 * this.timestep : 0 ) : ( this.brake > 0 ? - 0.4 * this.timestep * this.brake : 0 ) );
                 if ((this.right && this.vehicle.ackermanSteering.steeringWheelPosition > 0) || (this.left && this.vehicle.ackermanSteering.steeringWheelPosition < 0)) {
@@ -646,7 +588,6 @@
                 this.steerSpeed =
                     Math.min( 0.02 * this.vehicle.maxSpeed / Math.abs(this.vehicle.speed), 1)
                     * ( (this.left ? 0.6 * this.timestep : 0) - (this.right ? 0.6 * this.timestep : 0) ) - (!(this.left || this.right) ?  this.timestep * this.vehicle.ackermanSteering.steeringWheelPosition : 0);
-                // console.log(this.steerSpeed, this.vehicle.maxSpeed);
                 this.vehicle.transmission.clutch += !this.clutch ? (this.vehicle.transmission.clutch < 1 ? 0.05 * this.timestep : 0 ) : (this.vehicle.transmission.clutch > 0 ? - 0.2 * this.timestep * this.vehicle.transmission.clutch : 0 );
                 if (this.vehicle.transmission.clutch < 0) this.vehicle.transmission.clutch = 0;
                 this.HUD.innerHTML =
@@ -663,7 +604,6 @@
                     '</tr></td><tr><td>Torque : <b>' + String( this.vehicle.engine._currentTorque.toFixed() ) + '</b>' +
                     '</tr></td><tr><td>Ackerman Steering Point : <b>' + String( Number.isFinite(this.vehicle.ackermanSteering.ackermanPoint)?this.vehicle.ackermanSteering.ackermanPoint.toFixed(2):this.vehicle.ackermanSteering.ackermanPoint ) + '</b>' +
                     '</tr></td></table>';
-                    // console.log(this.vehicle.speed.length());
 
                 this.vehicle.updateLoad();
                 this.vehicle.updateClutchConnection( this.throttle, this.brake, this.timestep / 5 );
@@ -674,14 +614,11 @@
                 this.sound.setVolume(Math.min((this.vehicle.engine._rot * this.vehicle.engine._rot) / (this.vehicle.engine._idle_rot * this.vehicle.engine._idle_rot), 1) * (0.75 + (0.25 * (this.throttle - 1))));
                 this.sound.setPlaybackRate( isNaN(this.vehicle.engine._rot) ? 0 : this.vehicle.engine._rot / this.vehicle.engine._idle_rot * 0.9 );
                 this.vehicle.updateWheelTransformation( this.timestep / 5, this.steerSpeed );
-                // this.vehicle.moveCar( timestep / 1 );
                 this.vehicle.applyTransformation( this.timestep / 5 );
                 this.scene.updateMatrixWorld();
-                // console.log(this.vehicle.centerTransformation);
                 this.controls.target.copy(this.vehicle.center.clone());
                 this.controls.update();
                 this.renderer.render( this.scene, this.camera );
-                this.timer2 = performance.now();
             }
         }
     }
