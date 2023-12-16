@@ -43,7 +43,6 @@ class Engine {
         this.forced_induction_factor = 1;
     } else if (this._rot / this._rev_limit <= 1) {
         let key = Math.ceil(40 * this._rot / this._rev_limit) / 40;
-        console.log(key);
         this.forced_induction_factor = this._forced_induction_factors[key];
     } else {
         this.forced_induction_factor = 0.00001;

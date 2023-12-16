@@ -373,7 +373,7 @@
             init() {
                 this.world = new CANNON.World();
                 this.world.gravity.set(0, -9.82, 0); // m/s²
-                var wheelPointsDetail = 16;
+                var wheelPointsDetail = 64;
                 console.log(this.json.vehicles[0]);
                 const wheel_D = this.json.vehicles[0].components.wheel[0].DO;
                 const wheel_positions = this.json.vehicles[0].geometry.wheelsCentersPositions;
@@ -448,10 +448,10 @@
                 this.scene.add(this.body.representation)
                     for (let i = 0;i < 4 ;i++) {
                     if (i == 1 || i == 2) {
-                        // this.wheels.constraint[i].motorEquation.enabled = true;
-                        // this.wheels.constraint[i].motorEquation.maxForce = 10;
-                        // this.wheels.constraint[i].motorEquation.minForce = -10;
-                        // this.wheels.constraint[i].motorEquation.targetVelocity = 1;
+                        this.wheels.constraint[i].motorEquation.enabled = true;
+                        this.wheels.constraint[i].motorEquation.maxForce = 10;
+                        this.wheels.constraint[i].motorEquation.minForce = -10;
+                        this.wheels.constraint[i].motorEquation.targetVelocity = 0;
                     }
                 }
             },
@@ -561,9 +561,9 @@
                         this.wheels.constraint[i].axisA.x = this.wheels.axes[i].z * Math.sin(angle);
                         this.wheels.constraint[i].axisA.z = this.wheels.axes[i].z * Math.cos(angle);
                     } else {
-                        // this.wheels.constraint[i].motorEquation.maxForce *= 1.001;
-                        // this.wheels.constraint[i].motorEquation.minForce *= 1.001;
-                        // this.wheels.constraint[i].motorEquation.targetVelocity *= 1.001;
+                        this.wheels.constraint[i].motorEquation.maxForce = this.vehicle.acceleration / 10;
+                        this.wheels.constraint[i].motorEquation.minForce = - this.vehicle.acceleration / 10;
+                        this.wheels.constraint[i].motorEquation.targetVelocity = this.vehicle.speed / 10;
                     }
                 }
                 this.body.representation.position.x = this.body.phys.position.x;
