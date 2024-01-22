@@ -363,7 +363,7 @@
                                 this.childs.push( this.group.children[i].children[j].children[k] );
 
                 this.scene.autoUpdate = false;
-                this.init();
+                // this.init();
                 document.addEventListener( 'keyup', this.onKeyUp )
                 document.addEventListener( 'keydown', this.onKeyDown )
                 this.animate();
@@ -577,7 +577,7 @@
             animate: function() {
                 requestAnimationFrame( this.animate );
                 this.timestep = 0.5;
-                this.updatePhysicsStep();
+                // this.updatePhysicsStep();
 
                 this.throttle += ( this.up ? ( this.throttle < 2 ? 0.05 * this.timestep : 0 ) : ( this.throttle > 1 ? - 0.1 * this.timestep * (this.throttle - 1) : 0 ) );
                 this.brake += ( this.down ? ( this.brake < 1 ? 0.2 * this.timestep : 0 ) : ( this.brake > 0 ? - 0.4 * this.timestep * this.brake : 0 ) );
